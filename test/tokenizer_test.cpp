@@ -41,6 +41,40 @@ TEST(TokenizerTest, TestTokenizeAlphanumeric) {
     assert_line_tokenizer_output("one123 two234", expected, 2);
 }
 
+TEST(TokenizerTest, TestTokenizeOperator) {
+    string expected [3] = {"var", "<=", "5"};
+    assert_line_tokenizer_output("var<=5", expected, 3);
+}
+
+TEST(TokenizerTest, TestDoesntTokenizeWrongOperators) {
+    string expected [4] = {"var", "<", "/", "5"};
+    assert_line_tokenizer_output("var</5", expected, 4);
+}
+
+TEST(TokenizerTest, TestWhitespaceAtEndOfLine) {
+    string expected [4] = {"var", "<", "/", "5"};
+    assert_line_tokenizer_output("var</5 ", expected, 4);
+}
+
+TEST(TokenizerTest, TestNewString) {
+    string line_tokens = "this is one line";
+    string expected [4] = {"this", "is", "one", "line"};
+    int expected_size = 4;
+    line_tokenizer t(line_tokens);
+    for (int i = 0; i < expected_size; ++i) {
+        ASSERT_EQ(t.next_token(), expected[i]);
+    }
+    ASSERT_FALSE(t.has_next_token());
+    line_tokens = "this is another line";
+    string expected2 [4] = {"this", "is", "another", "line"};
+    expected_size = 4;
+    t.new_string(line_tokens);
+    for (int i = 0; i < expected_size; ++i) {
+        ASSERT_EQ(t.next_token(), expected2[i]);
+    }
+    ASSERT_FALSE(t.has_next_token());
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

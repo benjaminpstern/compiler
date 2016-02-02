@@ -53,6 +53,14 @@ string line_tokenizer::next_token() {
     if (is_punctuation(cur_char)) {
         ++position_;
         cur_token += cur_char;
+        if (is_operator_continuation(cur_char, "")) {
+            cur_char = line_[position_];
+            if (is_operator_continuation(cur_char, cur_token)) {
+                cur_token += cur_char;
+                ++position_;
+                return cur_token;
+            }
+        }
         return cur_token;
     }
     if (is_variable_char(cur_char)) {
@@ -67,15 +75,21 @@ string line_tokenizer::next_token() {
 }
 
 bool line_tokenizer::has_next_token() {
+    char cur_char = line_[position_];
+    while (is_whitespace(cur_char)) {
+        ++position_;
+        cur_char = line_[position_];
+    }
     return position_ < line_.size();
 }
 
-// TODO
 void line_tokenizer::new_string(string line) {
+    line_ = line;
+    position_ = 0;
 }
 
 bool line_tokenizer::is_punctuation(char c) {
-    string punctuation = "(){}[],.<>";
+    string punctuation = ";,[]{}()<>+-*/=%&";
     for (int i = 0; i < punctuation.size(); ++i) {
         if (punctuation[i] == c) {
             return true;
@@ -84,8 +98,29 @@ bool line_tokenizer::is_punctuation(char c) {
     return false;
 }
 
+bool line_tokenizer::is_operator_continuation(char c, string cur_token) {
+    string operators[6] = {"<=", "==", "!=", ">=", "/*", "*/"};
+    if (cur_token.size() == 0) {
+        for (int i = 0; i < 6; ++i) {
+            if (operators[i][0] == c) {
+                return true;
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < 6; ++i) {
+            if (operators[i][0] == cur_token[0]) {
+                if (operators[i][1] == c) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 bool line_tokenizer::is_whitespace(char c) {
-    return c == ' ' || c == '\t';
+    return c == ' ' || c == '\t' || c == '\n';
 }
 
 bool line_tokenizer::is_variable_char(char c) {

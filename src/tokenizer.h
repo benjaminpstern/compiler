@@ -32,6 +32,7 @@ class line_tokenizer {
         bool is_punctuation(char c);
         bool is_whitespace(char c);
         bool is_variable_char(char c);
+        bool is_operator_continuation(char c, string cur_token);
         string line_;
         int position_;
 };
