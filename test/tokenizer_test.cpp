@@ -4,6 +4,14 @@
 #include "tokenizer.h"
 #endif
 
+#ifndef IOSTREAM
+#include <iostream>
+#endif
+
+#ifndef FSTREAM
+#include <fstream>
+#endif
+
 void assert_line_tokenizer_output(
         string line_tokens,
         string expected [],
@@ -73,6 +81,18 @@ TEST(TokenizerTest, TestNewString) {
         ASSERT_EQ(t.next_token(), expected2[i]);
     }
     ASSERT_FALSE(t.has_next_token());
+}
+
+TEST(TokenizerTest, TestReadFromFile) {
+    ifstream expected("testFiles/tokenizedProgram.txt");
+    string line;
+    tokenizer t("testFiles/program.txt");
+    while (t.has_next_token()) {
+        expected >> line;
+        ASSERT_EQ(t.next_token(), line);
+    }
+    ASSERT_FALSE(t.has_next_token());
+    ASSERT_FALSE(expected.good());
 }
 
 int main(int argc, char **argv) {

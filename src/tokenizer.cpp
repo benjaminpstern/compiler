@@ -7,7 +7,6 @@ tokenizer::tokenizer(string filename) :
     line_tokens_("")
 {}
 
-// TODO test this
 string tokenizer::next_token() {
     if (line_tokens_.has_next_token()) {
         return line_tokens_.next_token();
@@ -18,24 +17,21 @@ string tokenizer::next_token() {
     throw std::out_of_range("no next token");
 }
 
-// TODO test this
 bool tokenizer::has_next_token() {
     if (line_tokens_.has_next_token()) {
         return true;
     }
-    else {
-        while (!line_tokens_.has_next_token()) {
-            if (file_stream_ && !file_stream_.eof()) {
-                string line;
-                file_stream_ >> line;
-                line_tokens_.new_string(line);
-            }
-            else {
-                throw std::out_of_range("no next token");
-            }
+    while (!line_tokens_.has_next_token()) {
+        if (file_stream_.good()) {
+            string line;
+            file_stream_ >> line;
+            line_tokens_.new_string(line);
         }
-        return true;
+        else {
+            return false;
+        }
     }
+    return true;
 }
 
 line_tokenizer::line_tokenizer(string line) {
