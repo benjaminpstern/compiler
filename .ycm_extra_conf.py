@@ -36,7 +36,10 @@ import ycm_core
 # CHANGE THIS LIST OF FLAGS. YES, THIS IS THE DROID YOU HAVE BEEN LOOKING FOR.
 flags = [
 '-I',
-'./src'
+'./src',
+'-std=c++11',
+'-x',
+'c++'
 ]
 
 
