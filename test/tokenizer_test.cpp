@@ -1,5 +1,9 @@
+#ifndef GTEST
 #include <gtest/gtest.h>
+#endif
+#ifndef GMOCK
 #include <gmock/gmock.h>
+#endif
 #ifndef TOKENIZER
 #include "tokenizer.h"
 #endif
@@ -22,23 +26,22 @@ void assert_line_tokenizer_output(
     }
     ASSERT_FALSE(t.has_next_token());
 }
-void create_file(string filename, string contents) {
-}
 
-void delete_file(string filename) {
-}
 TEST(TokenizerTest, TestEmpty) {
     string expected [0] = { };
     assert_line_tokenizer_output("", expected, 0);
 }
+
 TEST(TokenizerTest, TestFirstElement) {
     string expected [1] = {"one"};
     assert_line_tokenizer_output("one", expected, 1);
 }
+
 TEST(TokenizerTest, TestTwoElements) {
     string expected [2] = {"one", "two"};
     assert_line_tokenizer_output("one two", expected, 2);
 }
+
 TEST(TokenizerTest, TestTokenizeParens) {
     string expected [3] = {"(", "one", ")"};
     assert_line_tokenizer_output("(one)", expected, 3);
@@ -54,9 +57,24 @@ TEST(TokenizerTest, TestTokenizeOperator) {
     assert_line_tokenizer_output("var<=5", expected, 3);
 }
 
+TEST(TokenizerTest, TestTokenizeFloats) {
+    string expected [3] = {"10", ".", "23"};
+    assert_line_tokenizer_output("10.23", expected, 3);
+}
+
 TEST(TokenizerTest, TestDoesntTokenizeWrongOperators) {
     string expected [4] = {"var", "<", "/", "5"};
     assert_line_tokenizer_output("var</5", expected, 4);
+}
+
+TEST(TokenizerTest, TestAllowsVariablesWithUnderscores) {
+    string expected [2] = {"a_b", "c_d"};
+    assert_line_tokenizer_output("a_b c_d", expected, 2);
+}
+
+TEST(TokenizerTest, TestDoesntAllowVariablesStartingWithNumbers) {
+    string expected [4] = {"5", "var", "<", "5"};
+    assert_line_tokenizer_output("5var<5", expected, 4);
 }
 
 TEST(TokenizerTest, TestWhitespaceAtEndOfLine) {
@@ -93,9 +111,4 @@ TEST(TokenizerTest, TestReadFromFile) {
     }
     ASSERT_FALSE(t.has_next_token());
     ASSERT_FALSE(expected.good());
-}
-
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

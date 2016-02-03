@@ -29,6 +29,8 @@ class line_tokenizer {
         // therefore you should verify that has_next_token returns false
         void new_string(string line);
     private:
+        bool is_alphabetic(char c);
+        bool is_numeric(char c);
         bool is_punctuation(char c);
         bool is_whitespace(char c);
         bool is_variable_char(char c);

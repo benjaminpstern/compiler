@@ -60,7 +60,15 @@ string line_tokenizer::next_token() {
         return cur_token;
     }
     if (is_variable_char(cur_char)) {
-        while (is_variable_char(cur_char)) {
+        if (!is_numeric(cur_char)) {
+            while (is_variable_char(cur_char)) {
+                cur_token += cur_char;
+                ++position_;
+                cur_char = line_[position_];
+            }
+            return cur_token;
+        }
+        while (is_numeric(cur_char)) {
             cur_token += cur_char;
             ++position_;
             cur_char = line_[position_];
@@ -85,7 +93,7 @@ void line_tokenizer::new_string(string line) {
 }
 
 bool line_tokenizer::is_punctuation(char c) {
-    string punctuation = ";,[]{}()<>+-*/=%&";
+    string punctuation = ";,[]{}()<>+-*/=%&.";
     for (int i = 0; i < punctuation.size(); ++i) {
         if (punctuation[i] == c) {
             return true;
@@ -119,17 +127,30 @@ bool line_tokenizer::is_whitespace(char c) {
     return c == ' ' || c == '\t' || c == '\n';
 }
 
-bool line_tokenizer::is_variable_char(char c) {
+bool line_tokenizer::is_alphabetic(char c) {
     if (c >= 'a' && c <= 'z') {
         return true;
     }
     if (c >= 'A' && c <= 'Z') {
         return true;
     }
+    return false;
+}
+
+bool line_tokenizer::is_numeric(char c) {
     if (c >= '0' && c <= '9') {
         return true;
     }
-    if (c == '_' || c == '-') {
+    return false;
+}
+bool line_tokenizer::is_variable_char(char c) {
+    if (is_alphabetic(c)) {
+        return true;
+    }
+    if (is_numeric(c)) {
+        return true;
+    }
+    if (c == '_') {
         return true;
     }
     return false;

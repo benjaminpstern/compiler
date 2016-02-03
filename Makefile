@@ -8,26 +8,29 @@ GTESTFLAGS = -isystem ${GTEST_DIR}/include -pthread -isystem ${GMOCK_DIR}/includ
 CPP_FILES = $(wildcard src/*.cpp)
 TEST_FILES = $(wildcard test/*.cpp)
 MAIN = src/main.cpp
-TESTS = $(addprefix test/,$(notdir $(TEST_FILES:.cpp=.exe)))
 SRCS = $(filter-out $(MAIN), $(CPP_FILES))
 OBJS = $(addprefix bin/,$(notdir $(SRCS:.cpp=.o)))
 
 EXECUTABLE = bpl
+TEST_EXECUTABLE = runTests
 
-TARGETS = $(EXECUTABLE) $(OBJS) $(TESTS)
+TARGETS = $(EXECUTABLE) $(OBJS) $(TEST_OBJS) $(TEST_EXECUTABLE)
 
 all: $(TARGETS)
 
-test: $(TESTS)
+test: $(TEST_OBJS) $(TEST_EXECUTABLE)
 
 bin/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-test/%.exe: test/%.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(GTESTFLAGS) -o $@ $<
+test/bin/%.o: test/%.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(GTESTFLAGS) -o $@ $<
 
-$(EXECUTABLE): $(OBJS)
+$(EXECUTABLE): $(OBJS) $(MAIN)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(MAIN) -o $(EXECUTABLE)
 
+$(TEST_EXECUTABLE): $(OBJS) $(TEST_FILES)
+	$(CXX) $(CXXFLAGS) $(GTESTFLAGS) $(OBJS) $(TEST_OBJS) $(TEST_FILES) -o $(TEST_EXECUTABLE)
+
 clean:
-	$(RM) $(OBJS) $(TESTS) $(EXECUTABLE)
+	$(RM) $(TARGETS)
