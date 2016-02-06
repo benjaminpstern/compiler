@@ -2,12 +2,14 @@ int factorial(int a, int b) {
     int n;
     int total;
     n = a;
-    total = 0; 
+    total = 0; /*
+    this is a comment
 
-    while (n <= b) {
+    */while (n <= b) {
         total = total + n;
         n = n + 1;
     }
 
     return total;
-}
+} /*
+*/

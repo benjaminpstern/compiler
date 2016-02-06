@@ -1,8 +1,4 @@
-int factorial(int a, int b) {
-    int n;
-    int total;
-    n = a;
-    total = 0; 
+int /* other comment and one more total = 0;
 
     while (n <= b) {
         total = total + n;

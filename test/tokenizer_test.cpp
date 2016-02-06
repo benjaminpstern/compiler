@@ -7,7 +7,9 @@
 #ifndef TOKENIZER
 #include "tokenizer.h"
 #endif
-
+#ifndef TOKEN
+#include "token.h"
+#endif
 #ifndef IOSTREAM
 #include <iostream>
 #endif
@@ -22,7 +24,7 @@ void assert_line_tokenizer_output(
         int expected_size) {
     line_tokenizer t(line_tokens);
     for (int i = 0; i < expected_size; ++i) {
-        ASSERT_EQ(t.next_token(), expected[i]);
+        ASSERT_EQ(t.next_token_str(), expected[i]);
     }
     ASSERT_FALSE(t.has_next_token());
 }
@@ -58,13 +60,34 @@ TEST(TokenizerTest, TestTokenizeOperator) {
 }
 
 TEST(TokenizerTest, TestTokenizeFloats) {
-    string expected [3] = {"10", ".", "23"};
-    assert_line_tokenizer_output("10.23", expected, 3);
+    string expected [3] = {"10.23", ".", "2"};
+    assert_line_tokenizer_output("10.23.2", expected, 3);
 }
 
 TEST(TokenizerTest, TestDoesntTokenizeWrongOperators) {
     string expected [4] = {"var", "<", "/", "5"};
     assert_line_tokenizer_output("var</5", expected, 4);
+}
+
+TEST(TokenizerTest, TestTokenizeStrings) {
+    string expected [2] = {"\"one two three\"", "four"};
+    assert_line_tokenizer_output("\"one two three\" four", expected, 2);
+}
+
+TEST(TokenizerTest, TestUnmatchedQuoteException) {
+    line_tokenizer t("one \"two three");
+    ASSERT_EQ(t.next_token_str(), "one");
+    try {
+        ASSERT_TRUE(t.has_next_token());
+        t.next_token_str();
+        FAIL() << "expected std::range_error";
+    }
+    catch(std::range_error const & err) {
+        EXPECT_EQ(err.what(),std::string("No matching \""));
+    }
+    catch(...) {
+        FAIL() << "Expected std::range_error";
+    }
 }
 
 TEST(TokenizerTest, TestAllowsVariablesWithUnderscores) {
@@ -88,27 +111,73 @@ TEST(TokenizerTest, TestNewString) {
     int expected_size = 4;
     line_tokenizer t(line_tokens);
     for (int i = 0; i < expected_size; ++i) {
-        ASSERT_EQ(t.next_token(), expected[i]);
+        ASSERT_EQ(t.next_token_str(), expected[i]);
     }
     ASSERT_FALSE(t.has_next_token());
     line_tokens = "this is another line";
     string expected2 [4] = {"this", "is", "another", "line"};
     expected_size = 4;
-    t.new_string(line_tokens);
+    t.add_string(line_tokens);
     for (int i = 0; i < expected_size; ++i) {
-        ASSERT_EQ(t.next_token(), expected2[i]);
+        ASSERT_EQ(t.next_token_str(), expected2[i]);
     }
     ASSERT_FALSE(t.has_next_token());
 }
 
-TEST(TokenizerTest, TestReadFromFile) {
-    ifstream expected("testFiles/tokenizedProgram.txt");
+void testTokenizeFile(string filename, string tokenizedFileName) {
+    ifstream expected;
+    expected.open(tokenizedFileName);
     string line;
-    tokenizer t("testFiles/program.txt");
-    while (t.has_next_token()) {
-        expected >> line;
-        ASSERT_EQ(t.next_token(), line);
+    tokenizer t(filename);
+    ASSERT_TRUE(expected.is_open());
+    while (expected >> line) {
+        ASSERT_TRUE(t.has_next_token());
+        ASSERT_EQ(t.next_token().get_str(), line);
     }
     ASSERT_FALSE(t.has_next_token());
     ASSERT_FALSE(expected.good());
+}
+
+TEST(TokenizerTest, TestSingleComment) {
+    testTokenizeFile(
+            "test/testFiles/programWithOneLineComment.txt",
+            "test/testFiles/tokenizedProgram.txt"
+            );
+}
+
+TEST(TokenizerTest, TestMultiLineComment) {
+    testTokenizeFile(
+            "test/testFiles/programWithMultiLineComment.txt",
+            "test/testFiles/tokenizedProgram.txt"
+            );
+}
+
+TEST(TokenizerTest, TestTrickyComment) {
+    testTokenizeFile(
+            "test/testFiles/programWithTrickyComment.txt",
+            "test/testFiles/tokenizedProgram.txt"
+            );
+}
+
+TEST(TokenizerTest, TestTwoCommentsInOneLine) {
+    testTokenizeFile(
+            "test/testFiles/programWithTwoCommentsInALine.txt",
+            "test/testFiles/tokenizedProgram.txt"
+            );
+}
+
+TEST(TokenizerTest, TestUnmatchedComment) {
+    try {
+        tokenizer t("test/testFiles/programWithUnmatchedComment.txt");
+        ASSERT_TRUE(t.has_next_token());
+        t.next_token();
+        t.next_token();
+        FAIL() << "expected std::range_error";
+    }
+    catch(std::range_error const & err) {
+        EXPECT_EQ(err.what(),std::string("No matching */"));
+    }
+    catch(...) {
+        FAIL() << "Expected std::range_error";
+    }
 }

@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     }
     tokenizer t(argv[1]);
     while (t.has_next_token()) {
-        cout << t.next_token() << endl;
+        cout << t.next_token().get_str() << endl;
     }
     return 0;
 }
