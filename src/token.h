@@ -5,7 +5,7 @@
 #ifndef TOKEN
 #define TOKEN
 
-const int num_allowed_types = 26;
+const int num_allowed_types = 25;
 using std::string;
 class token {
     public:
@@ -18,7 +18,7 @@ class token {
         string str_;
         int line_num_;
         const string allowed_types[num_allowed_types] = {
-            "int", "float", "comment", "string", "identifier", "(", ")", "{",
+            "int", "float", "string", "identifier", "(", ")", "{",
             "}", "[", "]", ";", "<=", ">=", ",", "!=", ">", "<", "==", "=",
             "+", "-", "*", "/", "%", "&"};
 };
