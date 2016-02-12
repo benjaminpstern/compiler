@@ -85,8 +85,8 @@ string line_tokenizer::next_token_str() {
         }
         return cur_token;
     }
-    if (is_variable_char(cur_char)) {
-        if (!is_numeric(cur_char)) {
+    if (is_variable_char(cur_char) || cur_char == '.') {
+        if (!is_numeric(cur_char) && cur_char != '.') {
             while (is_variable_char(cur_char)) {
                 cur_token += cur_char;
                 ++position_;
@@ -197,9 +197,20 @@ token tokenizer::identify_token(string str) {
         type = "string";
     }
     if (is_alphabetic(first_char)) {
-        type = "identifier";
+        bool found = false;
+        for (int i = 0; i < num_keywords; ++i) {
+            if (keywords[i] == str) {
+                found = true;
+            }
+        }
+        if (!found) {
+            type = "identifier";
+        }
+        else {
+            type = "keyword";
+        }
     }
-    if (is_numeric(first_char)) {
+    if (is_numeric(first_char) || first_char == '.') {
         if (str.find('.') != string::npos) {
             type = "float";
         }
@@ -212,4 +223,8 @@ token tokenizer::identify_token(string str) {
     }
     token return_token(type, str, line_num_);
     return return_token;
+}
+
+tokenizer::~tokenizer() {
+    file_stream_.close();
 }

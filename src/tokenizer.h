@@ -38,7 +38,7 @@ class line_tokenizer {
         bool is_variable_char(char c);
         bool is_operator_continuation(char c, string cur_token);
         string line_;
-        int position_;
+        string::size_type position_;
 };
 
 
@@ -47,6 +47,7 @@ class tokenizer {
         tokenizer(string filename);
         token next_token();
         bool has_next_token();
+        ~tokenizer();
     private:
         ifstream file_stream_;
         line_tokenizer line_tokens_; token identify_token(string str);

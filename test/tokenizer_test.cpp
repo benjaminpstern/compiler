@@ -60,8 +60,8 @@ TEST(TokenizerTest, TestTokenizeOperator) {
 }
 
 TEST(TokenizerTest, TestTokenizeFloats) {
-    string expected [3] = {"10.23", ".", "2"};
-    assert_line_tokenizer_output("10.23.2", expected, 3);
+    string expected [3] = {"10.23", ".2"};
+    assert_line_tokenizer_output("10.23.2", expected, 2);
 }
 
 TEST(TokenizerTest, TestDoesntTokenizeWrongOperators) {
@@ -103,6 +103,11 @@ TEST(TokenizerTest, TestDoesntAllowVariablesStartingWithNumbers) {
 TEST(TokenizerTest, TestWhitespaceAtEndOfLine) {
     string expected [4] = {"var", "<", "/", "5"};
     assert_line_tokenizer_output("var</5 ", expected, 4);
+}
+
+TEST(TokenizerTest, TestAllowsFloatWithLeadingPeriod) {
+    string expected [1] = {".050"};
+    assert_line_tokenizer_output(".050", expected, 1);
 }
 
 TEST(TokenizerTest, TestNewString) {
