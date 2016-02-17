@@ -5,16 +5,26 @@
 #ifndef PARSE_TREE
 #define PARSE_TREE
 
+#ifndef SSTREAM
+#include <sstream>
+#endif
 using std::string;
 class parse_tree_node {
     public:
         parse_tree_node();
+        parse_tree_node(string type, int num_children);
         parse_tree_node* get_children();
-        string type;
+        int get_num_children();
+        string get_type();
+        string to_str();
+        string to_indented_str();
+        void set_child(int num, parse_tree_node& child);
         ~parse_tree_node();
     private:
-        parse_tree_node* children;
-        int num_children;
+        parse_tree_node* children_;
+        int num_children_;
+        void to_str(std::stringstream& s);
+        void to_indented_str(std::stringstream& s, int depth);
+        string type_;
 };
-
 #endif

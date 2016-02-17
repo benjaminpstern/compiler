@@ -143,6 +143,16 @@ void testTokenizeFile(string filename, string tokenizedFileName) {
     ASSERT_FALSE(expected.good());
 }
 
+TEST(TokenizerTest, TestPeek) {
+    tokenizer t("test/testFiles/program.txt");
+    ASSERT_TRUE(t.has_next_token());
+    ASSERT_EQ("int", t.peek_token().get_str());
+    ASSERT_EQ("int", t.peek_token().get_str());
+    ASSERT_EQ("int", t.next_token().get_str());
+    ASSERT_EQ("factorial", t.peek_token().get_str());
+
+}
+
 TEST(TokenizerTest, TestSingleComment) {
     testTokenizeFile(
             "test/testFiles/programWithOneLineComment.txt",
