@@ -13,6 +13,7 @@ class parse_tree_node {
     public:
         parse_tree_node();
         parse_tree_node(string type, int num_children);
+        parse_tree_node(string type, int num_children, int line_num);
         parse_tree_node* get_children();
         int get_num_children();
         string get_type();
@@ -23,8 +24,10 @@ class parse_tree_node {
     private:
         parse_tree_node* children_;
         int num_children_;
+        int line_num_;
         void to_str(std::stringstream& s);
         void to_indented_str(std::stringstream& s, int depth);
+        void init(string type, int num_children, int line_num);
         string type_;
 };
 #endif

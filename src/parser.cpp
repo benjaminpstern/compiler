@@ -35,15 +35,22 @@ parse_tree_node& parser::expression_statement() {
 
 parse_tree_node& parser::compound_statement() {
     expect_token_type("{");
-    parse_tree_node* p = new parse_tree_node("expression statement", 1);
-    p->set_child(0, expression());
+    parse_tree_node* p = new parse_tree_node("compound statement", 1);
+    p->set_child(0, statement_list());
     expect_token_type("}");
     return *p;
 }
 
 parse_tree_node& parser::statement_list() {
     parse_tree_node* p = new parse_tree_node("statement list", 2);
-    p->set_child(0, expression());
+    p->set_child(0, statement());
+    if (tokens_.peek_token().get_type() != "}") {
+        p->set_child(1, statement_list());
+    }
+    else {
+        parse_tree_node* empty = new parse_tree_node("empty", 0);
+        p->set_child(1, *empty);
+    }
     return *p;
 }
 
@@ -60,9 +67,22 @@ parse_tree_node& parser::identifier() {
 }
 
 token parser::expect_token_type(string type) {
+    string message = "expected ";
+    message += type;
+    return expect_token_type(type, message);
+}
+
+token parser::expect_token_type(string type, string message) {
     token t = tokens_.next_token();
     if (t.get_type() != type) {
-        throw std::range_error("syntax error");
+        std::ios_base::openmode flags = std::ios_base::app | std::ios_base::out;
+        stringstream error("syntax error: line ", flags);
+        error << t.get_line_num();
+        error << " : ";
+        error << message;
+        error << " ; got token ";
+        error << t.get_str();
+        throw std::range_error(error.str());
     }
     return t;
 }

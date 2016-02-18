@@ -21,5 +21,6 @@ class parser {
         parse_tree_node& expression();
         parse_tree_node& identifier();
         token expect_token_type(string type);
+        token expect_token_type(string type, string message);
 };
 #endif

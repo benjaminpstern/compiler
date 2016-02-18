@@ -58,6 +58,7 @@ class string_tokenizer : public tokenizer_interface {
         token next_token() {
             if (cached_token_ != NULL) {
                 token t = *cached_token_;
+                delete cached_token_;
                 cached_token_ = NULL;
                 return t;
             }
@@ -69,7 +70,8 @@ class string_tokenizer : public tokenizer_interface {
                 return t;
             }
             token t = identify_token(line_tokens_.next_token_str(), 0);
-            cached_token_ = &t;
+            cached_token_ = new token("int", "0", 0);
+            *cached_token_ = t;
             return t;
         }
 };
@@ -89,12 +91,19 @@ TEST(ParseTreeTest, TestParseSingleStatement) {
     string_tokenizer tokens("x;");
     parser p(tokens);
     parse_tree_node node = p.parse();
-    ASSERT_EQ("<program, (<statement, (<expression statement, (<expression, (<x, ()>)>)>)>)>", node.to_str());
+    ASSERT_EQ("<program, (<statement, (<expression statement, "
+            "(<expression, (<x, ()>)>)>)>)>", node.to_str());
 }
 
 TEST(ParseTreeTest, TestParseCompoundStatement) {
-    string_tokenizer tokens("{x; y; z}");
+    string_tokenizer tokens("{x; y; z;}");
     parser p(tokens);
     parse_tree_node node = p.parse();
-    ASSERT_EQ("<program, (<statement, (<compound statement, (<statement list, (<expression, (<x, ()>)>, <statement list, (<expression, (<y, ()>)>, <statement list, (<expression, (<z, ()>)>)>)>)>)>)>)>", node.to_str());
+    ASSERT_EQ("<program, (<statement, (<compound statement, "
+            "(<statement list, (<statement, (<expression statement, "
+            "(<expression, (<x, ()>)>)>)><statement list, (<statement, "
+            "(<expression statement, (<expression, (<y, ()>)>)>)>"
+            "<statement list, (<statement, (<expression statement, "
+            "(<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>",
+            node.to_str());
 }

@@ -7,17 +7,25 @@
 #endif
 
 parse_tree_node::parse_tree_node() {
-    parse_tree_node("empty", 0);
+    init("empty", 0, 0);
 }
 
 parse_tree_node::parse_tree_node(string type, int num_children) {
+    init(type, num_children, 0);
+}
+
+parse_tree_node::parse_tree_node(string type, int num_children, int line_num) {
+    init(type, num_children, line_num);
+}
+
+void parse_tree_node::init(string type, int num_children, int line_num) {
     type_ = type;
     num_children_ = num_children;
+    line_num_ = line_num;
     if (num_children_ > 0) {
         children_ = new parse_tree_node[num_children_];
     }
 }
-
 string parse_tree_node::to_str() {
     std::stringstream s("", std::ios_base::app | std::ios_base::out);
     to_str(s);
