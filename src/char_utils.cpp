@@ -23,7 +23,7 @@ bool is_numeric(char c) {
 }
 
 bool is_punctuation(char c) {
-    string punctuation = ";,[]{}()<>+-*/=%&";
+    string punctuation = ";,[]{}()<>+-*/=%&!";
     for (string::size_type i = 0; i < punctuation.size(); ++i) {
         if (punctuation[i] == c) {
             return true;

@@ -107,3 +107,16 @@ TEST(ParseTreeTest, TestParseCompoundStatement) {
             "(<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>",
             node.to_str());
 }
+
+TEST(ParseTreeTest, TestParseIfStatement) {
+    string_tokenizer tokens("{if (x) y;}");
+    parser p(tokens);
+    parse_tree_node node = p.parse();
+    ASSERT_EQ("<program, (<statement, (<if statement, "
+            "(<statement list, (<statement, (<expression statement, "
+            "(<expression, (<x, ()>)>)>)><statement list, (<statement, "
+            "(<expression statement, (<expression, (<y, ()>)>)>)>"
+            "<statement list, (<statement, (<expression statement, "
+            "(<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>",
+            node.to_str());
+}
