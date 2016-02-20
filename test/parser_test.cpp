@@ -77,10 +77,23 @@ class string_tokenizer : public tokenizer_interface {
 };
 
 TEST(StringTokenizerTest, TestStringTokenizerOverridesMethods) {
-    string_tokenizer tokens("This is a tokenizer");
-    string token_strings[4] = {"This", "is", "a", "tokenizer"};
-    for (int i = 0; i < 4; ++i) {
+    string_tokenizer tokens("This is a tokenizer{stuff}");
+    string token_strings[7] = {"This", "is", "a", "tokenizer", "{", "stuff", "}"};
+    for (int i = 0; i < 7; ++i) {
         ASSERT_TRUE(tokens.has_next_token());
+        ASSERT_EQ(token_strings[i], tokens.peek_token().get_str());
+        token tok = tokens.next_token();
+        ASSERT_EQ(token_strings[i], tok.get_str());
+    }
+    ASSERT_FALSE(tokens.has_next_token());
+}
+
+TEST(StringTokenizerTest, TestStringTokenizerWorksWithCompoundStatements) {
+    string_tokenizer tokens("{x;y;z;}");
+    string token_strings[8] = {"{", "x", ";", "y", ";", "z", ";", "}"};
+    for (int i = 0; i < 8; ++i) {
+        ASSERT_TRUE(tokens.has_next_token());
+        ASSERT_EQ(token_strings[i], tokens.peek_token().get_str());
         token tok = tokens.next_token();
         ASSERT_EQ(token_strings[i], tok.get_str());
     }
@@ -109,14 +122,23 @@ TEST(ParseTreeTest, TestParseCompoundStatement) {
 }
 
 TEST(ParseTreeTest, TestParseIfStatement) {
-    string_tokenizer tokens("{if (x) y;}");
+    string_tokenizer tokens("if (x) y;");
     parser p(tokens);
     parse_tree_node node = p.parse();
     ASSERT_EQ("<program, (<statement, (<if statement, "
-            "(<statement list, (<statement, (<expression statement, "
-            "(<expression, (<x, ()>)>)>)><statement list, (<statement, "
-            "(<expression statement, (<expression, (<y, ()>)>)>)>"
-            "<statement list, (<statement, (<expression statement, "
-            "(<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>",
+            "(<expression, (<x, ()>)>"
+            "<statement, (<expression statement, (<expression, (<y, ()>)>)>)>)>)>)>",
+            node.to_str());
+}
+
+TEST(ParseTreeTest, TestParseIfAndCompoundStatement) {
+    string_tokenizer tokens("if (x) {y; z;}");
+    parser p(tokens);
+    parse_tree_node node = p.parse();
+    ASSERT_EQ("<program, (<statement, (<if statement, (<expression, "
+            "(<x, ()>)><statement, (<compound statement, (<statement "
+            "list, (<statement, (<expression statement, (<expression, "
+            "(<y, ()>)>)>)><statement list, (<statement, (<expression "
+            "statement, (<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>)>",
             node.to_str());
 }

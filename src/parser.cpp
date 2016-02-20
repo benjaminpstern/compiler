@@ -20,6 +20,9 @@ parse_tree_node& parser::statement() {
     if (tokens_.peek_token().get_str() == "{") {
         p->set_child(0, compound_statement());
     }
+    else if (tokens_.peek_token().get_str() == "if") {
+        p->set_child(0, if_statement());
+    }
     else {
         p->set_child(0, expression_statement());
     }
@@ -54,6 +57,16 @@ parse_tree_node& parser::statement_list() {
     return *p;
 }
 
+parse_tree_node& parser::if_statement() {
+    parse_tree_node* p = new parse_tree_node("if statement", 2);
+    expect_keyword("if");
+    expect_token_type("(");
+    p->set_child(0, expression());
+    expect_token_type(")");
+    p->set_child(1, statement());
+    return *p;
+}
+
 parse_tree_node& parser::expression() {
     parse_tree_node* p = new parse_tree_node("expression", 1);
     p->set_child(0, identifier());
@@ -72,11 +85,32 @@ token parser::expect_token_type(string type) {
     return expect_token_type(type, message);
 }
 
+token parser::expect_keyword(string keyword) {
+    string message = "expected keyword ";
+    message += keyword;
+    return expect_keyword(keyword, message);
+}
+
 token parser::expect_token_type(string type, string message) {
     token t = tokens_.next_token();
     if (t.get_type() != type) {
         std::ios_base::openmode flags = std::ios_base::app | std::ios_base::out;
         stringstream error("syntax error: line ", flags);
+        error << t.get_line_num();
+        error << " : ";
+        error << message;
+        error << " ; got token ";
+        error << t.get_str();
+        throw std::range_error(error.str());
+    }
+    return t;
+}
+
+token parser::expect_keyword(string keyword, string message) {
+    token t = tokens_.next_token();
+    if (t.get_type() != "keyword" || t.get_str() != keyword) {
+        std::ios_base::openmode flags = std::ios_base::app | std::ios_base::out;
+        stringstream error("syntax error; invalid keyword:  line ", flags);
         error << t.get_line_num();
         error << " : ";
         error << message;

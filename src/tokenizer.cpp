@@ -126,7 +126,10 @@ string line_tokenizer::next_token_str() {
         }
         return cur_token;
     }
-    throw std::range_error("illegal character");
+    string message = "illegal character: ";
+    message += cur_token;
+    message += cur_char;
+    throw std::range_error(message);
 }
 
 bool line_tokenizer::has_next_token() {

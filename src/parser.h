@@ -18,9 +18,12 @@ class parser {
         parse_tree_node& expression_statement();
         parse_tree_node& compound_statement();
         parse_tree_node& statement_list();
+        parse_tree_node& if_statement();
         parse_tree_node& expression();
         parse_tree_node& identifier();
         token expect_token_type(string type);
+        token expect_keyword(string keyword);
         token expect_token_type(string type, string message);
+        token expect_keyword(string keyword, string message);
 };
 #endif
