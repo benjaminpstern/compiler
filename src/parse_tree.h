@@ -9,6 +9,7 @@
 #include <sstream>
 #endif
 using std::string;
+
 class parse_tree_node {
     public:
         parse_tree_node();
@@ -29,5 +30,19 @@ class parse_tree_node {
         void to_indented_str(std::stringstream& s, int depth);
         void init(string type, int num_children, int line_num);
         string type_;
+};
+
+class id_node : public parse_tree_node {
+    public:
+        id_node(string value);
+    private:
+        string value_;
+};
+
+class int_node : public parse_tree_node {
+    public:
+        int_node(int value);
+    private:
+        int value_;
 };
 #endif
