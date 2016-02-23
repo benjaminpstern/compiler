@@ -251,4 +251,7 @@ token tokenizer_interface::identify_token(string str, int line_num) {
 
 tokenizer::~tokenizer() {
     file_stream_.close();
+    if (cached_token_ != NULL) {
+        delete cached_token_;
+    }
 }

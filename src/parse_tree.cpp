@@ -93,14 +93,17 @@ void id_node::to_indented_str(std::stringstream& s, int depth) {
     s << to_str();
 }
 
-void parse_tree_node::set_child(int num, parse_tree_node& child) {
+void parse_tree_node::set_child(int num, parse_tree_node* child) {
     if (num < 0 || num >= num_children_) {
         throw std::range_error("cannot set that child: index out of bounds");
     }
-    children_[num] = &child;
+    children_[num] = child;
 }
 
 parse_tree_node::~parse_tree_node() {
+    for (int i = 0; i < num_children_; ++i) {
+        delete children_[i];
+    }
     if (num_children_ > 0) {
         delete [] children_;
     }
@@ -154,4 +157,33 @@ internal_node::internal_node(string type, int num_children) : parse_tree_node() 
 
 internal_node::internal_node(string type, int num_children, int line_num) : parse_tree_node() {
     init(type, num_children, line_num);
+}
+
+type_node::type_node(string type) : parse_tree_node() {
+    init("type", 0, 0);
+    type_ = type;
+}
+
+type_node::type_node(string type, int line_num) : parse_tree_node() {
+    init("type", 0, line_num);
+    type_ = type;
+}
+
+string type_node::to_str() {
+    return "type: " + type_;
+}
+
+string type_node::to_indented_str() {
+    return to_str();
+}
+
+void type_node::to_str(std::stringstream& s) {
+    s << to_str();
+}
+
+void type_node::to_indented_str(std::stringstream& s, int depth) {
+    for (int i = 0; i < depth; ++i) {
+        s << "\t";
+    }
+    s << to_indented_str();
 }

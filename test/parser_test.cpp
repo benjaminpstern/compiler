@@ -25,8 +25,8 @@ TEST(ParseTreeTest, TestPrintSingleNode) {
 
 TEST(ParseTreeTest, TestPrintNodeWithChildren) {
     internal_node node("stuff", 2);
-    internal_node left_child("left", 0);
-    internal_node right_child("right", 0);
+    internal_node* left_child = new internal_node("left", 0);
+    internal_node* right_child = new internal_node("right", 0);
     node.set_child(0, left_child);
     node.set_child(1, right_child);
     string node_str = node.to_str();
@@ -35,14 +35,13 @@ TEST(ParseTreeTest, TestPrintNodeWithChildren) {
 
 TEST(ParseTreeTest, TestPrintIndentedNodeWithChildren) {
     internal_node node("stuff", 2);
-    internal_node left_child("left", 0);
-    internal_node right_child("right", 0);
+    internal_node* left_child = new internal_node("left", 0);
+    internal_node* right_child = new internal_node("right", 0);
     node.set_child(0, left_child);
     node.set_child(1, right_child);
     string node_str = node.to_indented_str();
     ASSERT_EQ("stuff: (\n\tleft: ()\n\tright: ()\n)", node_str);
 }
-
 class string_tokenizer : public tokenizer_interface {
     private:
         line_tokenizer line_tokens_;
@@ -104,40 +103,54 @@ TEST(StringTokenizerTest, TestStringTokenizerWorksWithCompoundStatements) {
 TEST(ParseTreeTest, TestParseSingleStatement) {
     string_tokenizer tokens("x;");
     parser p(tokens);
-    parse_tree_node* node = p.parse();
+    internal_node* node = p.parse();
     ASSERT_EQ("program: (statement: (expression statement: (expression: "
             "(id: x))))", node->to_str());
+    delete node;
 }
 
 TEST(ParseTreeTest, TestParseCompoundStatement) {
     string_tokenizer tokens("{x; y; z;}");
     parser p(tokens);
-    parse_tree_node* node = p.parse();
+    internal_node* node = p.parse();
     ASSERT_EQ("program: (statement: (compound statement: (statement list: "
             "(statement: (expression statement: (expression: (id: x))), "
             "statement list: (statement: (expression statement: (expression: "
             "(id: y))), statement list: (statement: (expression statement: "
             "(expression: (id: z))), empty: ()))))))",
             node->to_str());
+    delete node;
 }
 
 TEST(ParseTreeTest, TestParseIfStatement) {
     string_tokenizer tokens("if (x) y;");
     parser p(tokens);
-    parse_tree_node* node = p.parse();
+    internal_node* node = p.parse();
     ASSERT_EQ("program: (statement: (if statement: (expression: (id: x), "
             "statement: (expression statement: (expression: (id: y))))))",
             node->to_str());
+    delete node;
+}
+
+TEST(ParseTreeTest, TestParseWhileStatement) {
+    string_tokenizer tokens("while (x) y;");
+    parser p(tokens);
+    internal_node* node = p.parse();
+    ASSERT_EQ("program: (statement: (while statement: (expression: (id: x), "
+            "statement: (expression statement: (expression: (id: y))))))",
+            node->to_str());
+    delete node;
 }
 
 TEST(ParseTreeTest, TestParseIfAndCompoundStatement) {
     string_tokenizer tokens("if (x) {y; z;}");
     parser p(tokens);
-    parse_tree_node* node = p.parse();
+    internal_node* node = p.parse();
     ASSERT_EQ("program: (statement: (if statement: (expression: (id: x), "
             "statement: (compound statement: (statement list: (statement: "
             "(expression statement: (expression: (id: y))), statement list: "
             "(statement: (expression statement: (expression: (id: z))), "
             "empty: ())))))))",
             node->to_str());
+    delete node;
 }

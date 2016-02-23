@@ -22,8 +22,8 @@ class parse_tree_node {
         virtual string to_indented_str() = 0;
         virtual void to_str(std::stringstream& s) = 0;
         virtual void to_indented_str(std::stringstream& s, int depth) = 0;
-        void set_child(int num, parse_tree_node& child);
-        ~parse_tree_node();
+        void set_child(int num, parse_tree_node* child);
+        virtual ~parse_tree_node();
     protected:
         parse_tree_node** children_;
         int num_children_;
@@ -42,6 +42,18 @@ class id_node : public parse_tree_node {
         void to_indented_str(std::stringstream& s, int depth);
     private:
         string value_;
+};
+
+class type_node : public parse_tree_node {
+    public:
+        type_node(string type, int line_num);
+        type_node(string type);
+        string to_str();
+        string to_indented_str();
+        void to_str(std::stringstream& s);
+        void to_indented_str(std::stringstream& s, int depth);
+    private:
+        string type_;
 };
 
 class int_node : public parse_tree_node {
