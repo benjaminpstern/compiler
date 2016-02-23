@@ -1,5 +1,5 @@
 
-CXX = clang++
+CXX = g++
 RM = rm -f
 CXXFLAGS = -g --std=c++11 -Wall -I ./src
 CPPFLAGS = -c

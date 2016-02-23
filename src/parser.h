@@ -11,7 +11,7 @@
 class parser {
     public:
         parser(tokenizer_interface& t);
-        parse_tree_node parse();
+        parse_tree_node* parse();
     private:
         tokenizer_interface& tokens_;
         parse_tree_node& statement();

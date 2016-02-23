@@ -9,14 +9,14 @@
 parser::parser(tokenizer_interface& t) : tokens_(t) {
 }
 
-parse_tree_node parser::parse() {
-    parse_tree_node* p = new parse_tree_node("program", 1);
+parse_tree_node* parser::parse() {
+    internal_node* p = new internal_node("program", 1);
     p->set_child(0, statement());
-    return *p;
+    return p;
 }
 
 parse_tree_node& parser::statement() {
-    parse_tree_node* p = new parse_tree_node("statement", 1);
+    internal_node* p = new internal_node("statement", 1);
     if (tokens_.peek_token().get_str() == "{") {
         p->set_child(0, compound_statement());
     }
@@ -30,7 +30,7 @@ parse_tree_node& parser::statement() {
 }
 
 parse_tree_node& parser::expression_statement() {
-    parse_tree_node* p = new parse_tree_node("expression statement", 1);
+    internal_node* p = new internal_node("expression statement", 1);
     p->set_child(0, expression());
     expect_token_type(";");
     return *p;
@@ -38,27 +38,27 @@ parse_tree_node& parser::expression_statement() {
 
 parse_tree_node& parser::compound_statement() {
     expect_token_type("{");
-    parse_tree_node* p = new parse_tree_node("compound statement", 1);
+    internal_node* p = new internal_node("compound statement", 1);
     p->set_child(0, statement_list());
     expect_token_type("}");
     return *p;
 }
 
 parse_tree_node& parser::statement_list() {
-    parse_tree_node* p = new parse_tree_node("statement list", 2);
+    internal_node* p = new internal_node("statement list", 2);
     p->set_child(0, statement());
     if (tokens_.peek_token().get_type() != "}") {
         p->set_child(1, statement_list());
     }
     else {
-        parse_tree_node* empty = new parse_tree_node("empty", 0);
+        internal_node* empty = new internal_node("empty", 0);
         p->set_child(1, *empty);
     }
     return *p;
 }
 
 parse_tree_node& parser::if_statement() {
-    parse_tree_node* p = new parse_tree_node("if statement", 2);
+    internal_node* p = new internal_node("if statement", 2);
     expect_keyword("if");
     expect_token_type("(");
     p->set_child(0, expression());
@@ -68,14 +68,14 @@ parse_tree_node& parser::if_statement() {
 }
 
 parse_tree_node& parser::expression() {
-    parse_tree_node* p = new parse_tree_node("expression", 1);
+    internal_node* p = new internal_node("expression", 1);
     p->set_child(0, identifier());
     return *p;
 }
 
 parse_tree_node& parser::identifier() {
     token id_token = expect_token_type("identifier");
-    parse_tree_node* p = new parse_tree_node(id_token.get_str(), 0);
+    id_node* p = new id_node(id_token.get_str(), 0);
     return *p;
 }
 

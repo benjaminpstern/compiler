@@ -18,29 +18,29 @@
 #endif
 
 TEST(ParseTreeTest, TestPrintSingleNode) {
-    parse_tree_node node("stuff", 0);
+    internal_node node("stuff", 0);
     string node_str = node.to_str();
-    ASSERT_EQ("<stuff, ()>", node_str);
+    ASSERT_EQ("stuff: ()", node_str);
 }
 
 TEST(ParseTreeTest, TestPrintNodeWithChildren) {
-    parse_tree_node node("stuff", 2);
-    parse_tree_node left_child("left", 0);
-    parse_tree_node right_child("right", 0);
+    internal_node node("stuff", 2);
+    internal_node left_child("left", 0);
+    internal_node right_child("right", 0);
     node.set_child(0, left_child);
     node.set_child(1, right_child);
     string node_str = node.to_str();
-    ASSERT_EQ("<stuff, (<left, ()><right, ()>)>", node_str);
+    ASSERT_EQ("stuff: (left: (), right: ())", node_str);
 }
 
 TEST(ParseTreeTest, TestPrintIndentedNodeWithChildren) {
-    parse_tree_node node("stuff", 2);
-    parse_tree_node left_child("left", 0);
-    parse_tree_node right_child("right", 0);
+    internal_node node("stuff", 2);
+    internal_node left_child("left", 0);
+    internal_node right_child("right", 0);
     node.set_child(0, left_child);
     node.set_child(1, right_child);
     string node_str = node.to_indented_str();
-    ASSERT_EQ("<stuff, (\n\t<left, ()>\n\t<right, ()>\n)>", node_str);
+    ASSERT_EQ("stuff: (\n\tleft: ()\n\tright: ()\n)", node_str);
 }
 
 class string_tokenizer : public tokenizer_interface {
@@ -78,7 +78,8 @@ class string_tokenizer : public tokenizer_interface {
 
 TEST(StringTokenizerTest, TestStringTokenizerOverridesMethods) {
     string_tokenizer tokens("This is a tokenizer{stuff}");
-    string token_strings[7] = {"This", "is", "a", "tokenizer", "{", "stuff", "}"};
+    string token_strings[7] = {
+        "This", "is", "a", "tokenizer", "{", "stuff", "}"};
     for (int i = 0; i < 7; ++i) {
         ASSERT_TRUE(tokens.has_next_token());
         ASSERT_EQ(token_strings[i], tokens.peek_token().get_str());
@@ -103,42 +104,40 @@ TEST(StringTokenizerTest, TestStringTokenizerWorksWithCompoundStatements) {
 TEST(ParseTreeTest, TestParseSingleStatement) {
     string_tokenizer tokens("x;");
     parser p(tokens);
-    parse_tree_node node = p.parse();
-    ASSERT_EQ("<program, (<statement, (<expression statement, "
-            "(<expression, (<x, ()>)>)>)>)>", node.to_str());
+    parse_tree_node* node = p.parse();
+    ASSERT_EQ("program: (statement: (expression statement: (expression: "
+            "(id: x))))", node->to_str());
 }
 
 TEST(ParseTreeTest, TestParseCompoundStatement) {
     string_tokenizer tokens("{x; y; z;}");
     parser p(tokens);
-    parse_tree_node node = p.parse();
-    ASSERT_EQ("<program, (<statement, (<compound statement, "
-            "(<statement list, (<statement, (<expression statement, "
-            "(<expression, (<x, ()>)>)>)><statement list, (<statement, "
-            "(<expression statement, (<expression, (<y, ()>)>)>)>"
-            "<statement list, (<statement, (<expression statement, "
-            "(<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>",
-            node.to_str());
+    parse_tree_node* node = p.parse();
+    ASSERT_EQ("program: (statement: (compound statement: (statement list: "
+            "(statement: (expression statement: (expression: (id: x))), "
+            "statement list: (statement: (expression statement: (expression: "
+            "(id: y))), statement list: (statement: (expression statement: "
+            "(expression: (id: z))), empty: ()))))))",
+            node->to_str());
 }
 
 TEST(ParseTreeTest, TestParseIfStatement) {
     string_tokenizer tokens("if (x) y;");
     parser p(tokens);
-    parse_tree_node node = p.parse();
-    ASSERT_EQ("<program, (<statement, (<if statement, "
-            "(<expression, (<x, ()>)>"
-            "<statement, (<expression statement, (<expression, (<y, ()>)>)>)>)>)>)>",
-            node.to_str());
+    parse_tree_node* node = p.parse();
+    ASSERT_EQ("program: (statement: (if statement: (expression: (id: x), "
+            "statement: (expression statement: (expression: (id: y))))))",
+            node->to_str());
 }
 
 TEST(ParseTreeTest, TestParseIfAndCompoundStatement) {
     string_tokenizer tokens("if (x) {y; z;}");
     parser p(tokens);
-    parse_tree_node node = p.parse();
-    ASSERT_EQ("<program, (<statement, (<if statement, (<expression, "
-            "(<x, ()>)><statement, (<compound statement, (<statement "
-            "list, (<statement, (<expression statement, (<expression, "
-            "(<y, ()>)>)>)><statement list, (<statement, (<expression "
-            "statement, (<expression, (<z, ()>)>)>)><empty, ()>)>)>)>)>)>)>)>",
-            node.to_str());
+    parse_tree_node* node = p.parse();
+    ASSERT_EQ("program: (statement: (if statement: (expression: (id: x), "
+            "statement: (compound statement: (statement list: (statement: "
+            "(expression statement: (expression: (id: y))), statement list: "
+            "(statement: (expression statement: (expression: (id: z))), "
+            "empty: ())))))))",
+            node->to_str());
 }

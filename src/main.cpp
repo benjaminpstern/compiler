@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     }
     tokenizer t(argv[1]);
     parser p(t);
-    parse_tree_node node = p.parse();
-    cout << node.to_indented_str() << endl;
+    parse_tree_node* node = p.parse();
+    cout << node->to_indented_str() << endl;
     return 0;
 }
