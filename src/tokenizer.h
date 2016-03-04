@@ -36,6 +36,7 @@ class tokenizer_interface {
     public:
         virtual token next_token(void) = 0;
         virtual token peek_token(void) = 0;
+        virtual void unget_token(token t) = 0;
         virtual bool has_next_token(void) = 0;
     protected:
         token identify_token(string str, int line_num);
@@ -61,13 +62,14 @@ class tokenizer : public tokenizer_interface {
         token next_token();
         token peek_token();
         bool has_next_token();
+        void unget_token(token t);
         ~tokenizer();
     private:
         ifstream file_stream_;
         line_tokenizer line_tokens_;
         int line_num_;
         string line_;
-        token* cached_token_;
+        std::vector<token> token_queue_;
         bool remove_comments(); // returns true if it removed something
         void end_comment();
 };

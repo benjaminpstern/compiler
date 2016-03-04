@@ -8,17 +8,16 @@
 
 tokenizer::tokenizer(string filename) :
     file_stream_(filename),
-    line_tokens_("")
+    line_tokens_(""),
+    token_queue_()
 {
     line_num_ = 0;
-    cached_token_ = NULL;
 }
 
 token tokenizer::next_token() {
-    if (cached_token_ != NULL) {
-        token t(cached_token_->get_type(), cached_token_->get_str(), cached_token_->get_line_num());
-        delete cached_token_;
-        cached_token_ = NULL;
+    if (!token_queue_.empty()) {
+        token t = token_queue_.front();
+        token_queue_.erase(token_queue_.begin());
         return t;
     }
     if (line_tokens_.has_next_token()) {
@@ -28,21 +27,24 @@ token tokenizer::next_token() {
 }
 
 token tokenizer::peek_token() {
-    if (cached_token_ != NULL) {
-        token t(cached_token_->get_type(), cached_token_->get_str(), cached_token_->get_line_num());
+    if (!token_queue_.empty()) {
+        token t = token_queue_.front();
         return t;
     }
     if (line_tokens_.has_next_token()) {
         token t = identify_token(line_tokens_.next_token_str(), line_num_);
-        cached_token_ = new token(";", "", 0);
-        *cached_token_ = t;
+        token_queue_.push_back(t);
         return t;
     }
     throw std::out_of_range("no next token");
 }
 
+void tokenizer::unget_token(token t) {
+    token_queue_.insert(token_queue_.begin(), t);
+}
+
 bool tokenizer::has_next_token() {
-    if (cached_token_ != NULL) {
+    if (!token_queue_.empty()) {
         return true;
     }
     if (line_tokens_.has_next_token()) {
@@ -251,7 +253,4 @@ token tokenizer_interface::identify_token(string str, int line_num) {
 
 tokenizer::~tokenizer() {
     file_stream_.close();
-    if (cached_token_ != NULL) {
-        delete cached_token_;
-    }
 }
