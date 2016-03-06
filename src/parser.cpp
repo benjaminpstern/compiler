@@ -357,6 +357,9 @@ parse_tree_node* parser::expression() {
     if (assignment) {
         // get var, put it in p
     }
+    else {
+        // parse as comp_exp
+    }
     return p;
 }
 
