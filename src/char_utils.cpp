@@ -35,4 +35,34 @@ bool is_punctuation(char c) {
 bool is_whitespace(char c) {
     return c == ' ' || c == '\t' || c == '\n';
 }
+
+bool is_relop(string s) {
+    string relops[6] = {"<=", "<", "==", "!=", ">=", ">"};
+    for (int i = 0; i < 6; ++i) {
+        if (s == relops[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_addop(string s) {
+    string addops[2] = {"+", "-"};
+    for (int i = 0; i < 2; ++i) {
+        if (s == addops[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_mulop(string s) {
+    string mulops[3] = {"*", "/", "%"};
+    for (int i = 0; i < 3; ++i) {
+        if (s == mulops[i]) {
+            return true;
+        }
+    }
+    return false;
+}
 #endif

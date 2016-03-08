@@ -26,5 +26,6 @@ int main(int argc, char** argv) {
     parser p(t);
     internal_node* node = p.parse();
     cout << node->to_indented_str() << endl;
+    delete node;
     return 0;
 }

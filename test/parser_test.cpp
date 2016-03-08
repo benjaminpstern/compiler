@@ -115,15 +115,14 @@ TEST(StringTokenizerTest, TestStringTokenizerWorksWithCompoundStatements) {
     }
     ASSERT_FALSE(tokens.has_next_token());
 }
-/*
 TEST(ParseTreeTest, TestParseSingleStatement) {
-    string_tokenizer tokens("x;");
+    string_tokenizer tokens("int x;");
     parser p(tokens);
     internal_node* node = p.parse();
-    ASSERT_EQ("program: (statement: (expression statement: (expression: "
-            "(id: x))))", node->to_str());
+    ASSERT_EQ("program: (declaration list: (declaration: (var_dec: (type: int, empty: (), id: x, empty: ())), empty: ()))", node->to_str());
     delete node;
 }
+/*
 
 TEST(ParseTreeTest, TestParseCompoundStatement) {
     string_tokenizer tokens("{x; y; z;}");
@@ -193,11 +192,10 @@ TEST(ParseTreeTest, TestLocalDecsCompoundStatement) {
 */
 
 TEST(ParseTreeTest, TestParseFunction) {
-    string_tokenizer tokens("void x(int y) {int x; z;} int x; float y;");
+    string_tokenizer tokens("void x(int y) {int x; z;} int x;");
     parser p(tokens);
     internal_node* node = p.parse();
-    std::cout << node->to_indented_str() << std::endl;
-    ASSERT_EQ("program: (declaration list: (declaration: (function_dec: (type: void, id: x, params: (param list: (param: (type: int, empty: (), id: y, empty: ()), empty: ())), compound statement: (local decs: (var_dec: (type: int, empty: (), id: x, empty: ()), empty: ()), statement list: (statement: (expression statement: (expression: (id: z))), empty: ())))), declaration list: (declaration: (var_dec: (type: int, empty: (), id: x, empty: ())), declaration list: (declaration: (var_dec: (type: float, empty: (), id: y, empty: ())), empty: ()))))",
+    ASSERT_EQ("program: (declaration list: (declaration: (function_dec: (type: void, id: x, params: (param list: (param: (type: int, empty: (), id: y, empty: ()), empty: ())), compound statement: (local decs: (var_dec: (type: int, empty: (), id: x, empty: ()), empty: ()), statement list: (statement: (expression statement: (expression: (comp exp: (E: (empty: (), empty: (), T: (empty: (), empty: (), F: (empty: (), factor: (id: z)))), empty: (), empty: ())))), empty: ())))), declaration list: (declaration: (var_dec: (type: int, empty: (), id: x, empty: ())), empty: ())))",
             node->to_str());
     delete node;
 }

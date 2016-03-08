@@ -13,6 +13,7 @@ class parser {
         parser(tokenizer_interface& t);
         internal_node* parse();
     private:
+        int cur_line_num();
         tokenizer_interface& tokens_;
         parse_tree_node* statement();
         parse_tree_node* expression_statement();
@@ -23,7 +24,21 @@ class parser {
         parse_tree_node* return_statement();
         parse_tree_node* write_statement();
         parse_tree_node* expression();
+        void get_exp_tokens(std::vector<token>& token_list,
+                std::vector<char>& stack, int line_num);
         parse_tree_node* var();
+        parse_tree_node* assignment();
+        parse_tree_node* comp_exp();
+        parse_tree_node* E();
+        parse_tree_node* T();
+        parse_tree_node* F();
+        parse_tree_node* factor();
+        parse_tree_node* paren_exp();
+        parse_tree_node* var_non_dereference_or_funcall();
+        parse_tree_node* array_index();
+        parse_tree_node* fun_call();
+        parse_tree_node* args();
+        parse_tree_node* arg_list();
         parse_tree_node* identifier();
         parse_tree_node* function_dec();
         parse_tree_node* var_dec();
