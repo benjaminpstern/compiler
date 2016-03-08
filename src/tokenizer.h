@@ -14,6 +14,10 @@
 #include <stdexcept>
 #endif
 
+#ifndef VECTOR
+#include <vector>
+#endif
+
 #ifndef TOKEN
 #include "token.h"
 #endif
@@ -27,6 +31,16 @@
 using std::string;
 using std::stringstream;
 using std::ifstream;
+
+class tokenizer_interface {
+    public:
+        virtual token next_token(void) = 0;
+        virtual token peek_token(void) = 0;
+        virtual void unget_token(token t) = 0;
+        virtual bool has_next_token(void) = 0;
+    protected:
+        token identify_token(string str, int line_num);
+};
 
 class line_tokenizer {
     public:
@@ -42,17 +56,20 @@ class line_tokenizer {
 };
 
 
-class tokenizer {
+class tokenizer : public tokenizer_interface {
     public:
         tokenizer(string filename);
         token next_token();
+        token peek_token();
         bool has_next_token();
+        void unget_token(token t);
         ~tokenizer();
     private:
         ifstream file_stream_;
-        line_tokenizer line_tokens_; token identify_token(string str);
+        line_tokenizer line_tokens_;
         int line_num_;
         string line_;
+        std::vector<token> token_queue_;
         bool remove_comments(); // returns true if it removed something
         void end_comment();
 };

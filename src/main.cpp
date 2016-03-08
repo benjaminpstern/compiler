@@ -10,6 +10,10 @@
 #include "tokenizer.h"
 #endif
 
+#ifndef PARSER
+#include "parser.h"
+#endif
+
 using std::cout;
 using std::endl;
 using std::setw;
@@ -19,11 +23,9 @@ int main(int argc, char** argv) {
         return 1;
     }
     tokenizer t(argv[1]);
-    while (t.has_next_token()) {
-        token tok = t.next_token();
-        cout << "token string:" << setw(15) << tok.get_str() << setw(15)
-            << "token type:" << setw(20) << tok.get_type() << setw(15) 
-            << "line num:" << setw(4) << tok.get_line_num() << endl;
-    }
+    parser p(t);
+    internal_node* node = p.parse();
+    cout << node->to_indented_str() << endl;
+    delete node;
     return 0;
 }

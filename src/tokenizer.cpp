@@ -8,22 +8,50 @@
 
 tokenizer::tokenizer(string filename) :
     file_stream_(filename),
-    line_tokens_("")
+    line_tokens_(""),
+    token_queue_()
 {
     line_num_ = 0;
 }
 
 token tokenizer::next_token() {
-    if (line_tokens_.has_next_token()) {
-        return identify_token(line_tokens_.next_token_str());
+    if (!token_queue_.empty()) {
+        token t = token_queue_.front();
+        token_queue_.erase(token_queue_.begin());
+        return t;
     }
     if (line_tokens_.has_next_token()) {
-        return identify_token(line_tokens_.next_token_str());
+        return identify_token(line_tokens_.next_token_str(), line_num_);
     }
     throw std::out_of_range("no next token");
 }
 
+token tokenizer::peek_token() {
+    if (!token_queue_.empty()) {
+        token t = token_queue_.front();
+        return t;
+    }
+    if (line_tokens_.has_next_token()) {
+        token t = identify_token(line_tokens_.next_token_str(), line_num_);
+        token_queue_.push_back(t);
+        return t;
+    }
+    else if (has_next_token()) {
+        token t = identify_token(line_tokens_.next_token_str(), line_num_);
+        token_queue_.push_back(t);
+        return t;
+    }
+    throw std::out_of_range("no next token");
+}
+
+void tokenizer::unget_token(token t) {
+    token_queue_.insert(token_queue_.begin(), t);
+}
+
 bool tokenizer::has_next_token() {
+    if (!token_queue_.empty()) {
+        return true;
+    }
     if (line_tokens_.has_next_token()) {
         return true;
     }
@@ -105,7 +133,10 @@ string line_tokenizer::next_token_str() {
         }
         return cur_token;
     }
-    throw std::range_error("illegal character");
+    string message = "illegal character: ";
+    message += cur_token;
+    message += cur_char;
+    throw std::range_error(message);
 }
 
 bool line_tokenizer::has_next_token() {
@@ -190,7 +221,7 @@ void tokenizer::end_comment() {
     line_ = line_.substr(line_.find("*/") + 2);
 }
 
-token tokenizer::identify_token(string str) {
+token tokenizer_interface::identify_token(string str, int line_num) {
     string type;
     char first_char = str[0];
     if (first_char == '"') {
@@ -221,7 +252,7 @@ token tokenizer::identify_token(string str) {
     if (is_punctuation(first_char)) {
         type = str;
     }
-    token return_token(type, str, line_num_);
+    token return_token(type, str, line_num);
     return return_token;
 }
 

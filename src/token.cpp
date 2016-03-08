@@ -12,7 +12,7 @@ const string keywords[num_keywords] = {
 const string allowed_types[num_allowed_types] = {
     "int", "float", "string", "identifier", "keyword", "(", ")", "{",
     "}", "[", "]", ";", "<=", ">=", ",", "!=", ">", "<", "==", "=",
-    "+", "-", "*", "/", "%", "&"
+    "+", "-", "*", "/", "%", "&", "placeholder"
 };
 token::token(string type, string str, int line_num) {
     bool found = false;

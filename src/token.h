@@ -6,7 +6,7 @@
 #define TOKEN
 
 using std::string;
-const int num_allowed_types = 26;
+const int num_allowed_types = 27;
 const int num_keywords = 11;
 extern const string keywords[];
 extern const string allowed_types[];
