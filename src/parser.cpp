@@ -528,7 +528,6 @@ parse_tree_node* parser::var_non_dereference_or_funcall() {
         return fun_call();
     }
     tokens_.unget_token(id);
-    
     return identifier();
 }
 
