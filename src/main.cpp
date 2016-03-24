@@ -14,6 +14,10 @@
 #include "parser.h"
 #endif
 
+#ifndef STDEXCEPT
+#include <stdexcept>
+#endif
+
 using std::cout;
 using std::endl;
 using std::setw;
@@ -24,8 +28,13 @@ int main(int argc, char** argv) {
     }
     tokenizer t(argv[1]);
     parser p(t);
-    internal_node* node = p.parse();
-    cout << node->to_indented_str() << endl;
-    delete node;
+    try {
+        internal_node* node = p.parse();
+        cout << node->to_indented_str() << endl;
+        delete node;
+    }
+    catch (std::range_error& e) {
+        cout << e.what() << endl;
+    }
     return 0;
 }

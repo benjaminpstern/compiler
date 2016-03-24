@@ -168,6 +168,7 @@ parse_tree_node* parser::write_statement() {
         p->set_child(0, empty_node());
         expect_token_type(")");
     }
+    expect_token_type(";");
     return p;
 }
 
@@ -326,7 +327,7 @@ parse_tree_node* parser::type_specifier() {
 
 void parser::get_exp_tokens(std::vector<token>& token_list,
         std::vector<char>& stack, int line_num) {
-    token t("placeholder", 0, 0);
+    token t("placeholder", "", 0);
     while (!stack.empty()) {
         if (!tokens_.has_next_token()) {
             std::stringstream s("unmatched ( on line ");
@@ -477,7 +478,7 @@ parse_tree_node* parser::F() {
     return p;
 }
 
-parse_tree_node* parser::factor() {
+parse_tree_node* parser::factor() { 
     internal_node* p = new internal_node("factor", 1, cur_line_num());
     if (tokens_.peek_token().get_type() == "(") {
         p->set_child(0, paren_exp());
