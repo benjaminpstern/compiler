@@ -256,7 +256,7 @@ parse_tree_node* parser::param() {
     internal_node* p = new internal_node("param", 4, cur_line_num());
     p->set_child(0, type_specifier());
     if (tokens_.peek_token().get_type() == "*") {
-        internal_node* star = new internal_node("*", 0, cur_line_num());
+        op_node* star = new op_node("*", cur_line_num());
         p->set_child(1, star);
         expect_token_type("*");
     }
@@ -280,7 +280,7 @@ parse_tree_node* parser::var_dec() {
     internal_node* p = new internal_node("var_dec", 4, cur_line_num());
     p->set_child(0, type_specifier());
     if (tokens_.peek_token().get_type() == "*") {
-        internal_node* star = new internal_node("*", 0, cur_line_num());
+        op_node* star = new op_node("*", cur_line_num());
         p->set_child(1, star);
         expect_token_type("*");
     }

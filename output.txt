@@ -1,0 +1,2740 @@
+test/testFiles/P10.bpl
+Line 1: program: (
+  Line 1: declaration list: (
+    Line 1: declaration: (
+      Line 1: function_dec: (
+        type: void
+        id: main
+        Line 1: params: (
+          Line 1: void: ()
+        )
+        Line 2: compound statement: (
+          Line 2: local decs: (
+            Line 2: var_dec: (
+              type: int
+              Line 2: empty: ()
+              id: x
+              Line 2: empty: ()
+            )
+            Line 3: local decs: (
+              Line 3: var_dec: (
+                type: int
+                op: *
+                id: p
+                Line 3: empty: ()
+              )
+              Line 4: empty: ()
+            )
+          )
+          Line 4: statement list: (
+            Line 4: statement: (
+              Line 4: expression statement: (
+                Line 4: expression: (
+                  Line 4: assignment: (
+                    Line 4: var: (
+                      Line 4: empty: ()
+                      id: p
+                      Line 4: empty: ()
+                    )
+                    Line 4: expression: (
+                      Line 4: comp exp: (
+                        Line 4: E: (
+                          Line 4: empty: ()
+                          Line 4: empty: ()
+                          Line 4: T: (
+                            Line 4: empty: ()
+                            Line 4: empty: ()
+                            Line 4: F: (
+                              op: &
+                              Line 4: factor: (
+                                id: x
+                              )
+                            )
+                          )
+                        )
+                        Line 4: empty: ()
+                        Line 4: empty: ()
+                      )
+                    )
+                  )
+                )
+              )
+            )
+            Line 5: statement list: (
+              Line 5: statement: (
+                Line 5: expression statement: (
+                  Line 5: expression: (
+                    Line 5: assignment: (
+                      Line 5: var: (
+                        Line 5: empty: ()
+                        id: x
+                        Line 5: empty: ()
+                      )
+                      Line 5: expression: (
+                        Line 5: comp exp: (
+                          Line 5: E: (
+                            Line 5: E: (
+                              Line 5: empty: ()
+                              Line 5: empty: ()
+                              Line 5: T: (
+                                Line 5: empty: ()
+                                Line 5: empty: ()
+                                Line 5: F: (
+                                  op: *
+                                  Line 5: factor: (
+                                    id: p
+                                  )
+                                )
+                              )
+                            )
+                            op: +
+                            Line 5: T: (
+                              Line 5: empty: ()
+                              Line 5: empty: ()
+                              Line 5: F: (
+                                Line 5: empty: ()
+                                Line 5: factor: (
+                                  id: 1
+                                )
+                              )
+                            )
+                          )
+                          Line 5: empty: ()
+                          Line 5: empty: ()
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+              Line 6: empty: ()
+            )
+          )
+        )
+      )
+    )
+    Line -1: empty: ()
+  )
+)
+test/testFiles/P11.bpl
+Line 2: program: (
+  Line 2: declaration list: (
+    Line 2: declaration: (
+      Line 2: function_dec: (
+        type: int
+        id: fact
+        Line 2: params: (
+          Line 2: param list: (
+            Line 2: param: (
+              type: int
+              Line 2: empty: ()
+              id: n
+              Line 2: empty: ()
+            )
+            Line 2: empty: ()
+          )
+        )
+        Line 3: compound statement: (
+          Line 3: local decs: (
+            Line 3: empty: ()
+            Line 3: empty: ()
+          )
+          Line 3: statement list: (
+            Line 3: statement: (
+              Line 3: if statement: (
+                Line 3: expression: (
+                  Line 3: comp exp: (
+                    Line 3: E: (
+                      Line 3: empty: ()
+                      Line 3: empty: ()
+                      Line 3: T: (
+                        Line 3: empty: ()
+                        Line 3: empty: ()
+                        Line 3: F: (
+                          Line 3: empty: ()
+                          Line 3: factor: (
+                            id: n
+                          )
+                        )
+                      )
+                    )
+                    op: ==
+                    Line 3: E: (
+                      Line 3: empty: ()
+                      Line 3: empty: ()
+                      Line 3: T: (
+                        Line 3: empty: ()
+                        Line 3: empty: ()
+                        Line 3: F: (
+                          Line 3: empty: ()
+                          Line 3: factor: (
+                            id: 0
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 4: statement: (
+                  Line 4: return statement: (
+                    Line 4: expression: (
+                      Line 4: comp exp: (
+                        Line 4: E: (
+                          Line 4: empty: ()
+                          Line 4: empty: ()
+                          Line 4: T: (
+                            Line 4: empty: ()
+                            Line 4: empty: ()
+                            Line 4: F: (
+                              Line 4: empty: ()
+                              Line 4: factor: (
+                                id: 1
+                              )
+                            )
+                          )
+                        )
+                        Line 4: empty: ()
+                        Line 4: empty: ()
+                      )
+                    )
+                  )
+                )
+                Line 6: else statement: (
+                  Line 6: statement: (
+                    Line 6: return statement: (
+                      Line 6: expression: (
+                        Line 6: comp exp: (
+                          Line 6: E: (
+                            Line 6: empty: ()
+                            Line 6: empty: ()
+                            Line 6: T: (
+                              Line 6: T: (
+                                Line 6: empty: ()
+                                Line 6: empty: ()
+                                Line 6: F: (
+                                  Line 6: empty: ()
+                                  Line 6: factor: (
+                                    id: n
+                                  )
+                                )
+                              )
+                              op: *
+                              Line 6: T: (
+                                Line 6: empty: ()
+                                Line 6: empty: ()
+                                Line 6: F: (
+                                  Line 6: empty: ()
+                                  Line 6: factor: (
+                                    Line 6: fun call: (
+                                      id: fact
+                                      Line 6: args: (
+                                        Line 6: arg list: (
+                                          Line 6: expression: (
+                                            Line 6: comp exp: (
+                                              Line 6: E: (
+                                                Line 6: E: (
+                                                  Line 6: empty: ()
+                                                  Line 6: empty: ()
+                                                  Line 6: T: (
+                                                    Line 6: empty: ()
+                                                    Line 6: empty: ()
+                                                    Line 6: F: (
+                                                      Line 6: empty: ()
+                                                      Line 6: factor: (
+                                                        id: n
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                                op: -
+                                                Line 6: T: (
+                                                  Line 6: empty: ()
+                                                  Line 6: empty: ()
+                                                  Line 6: F: (
+                                                    Line 6: empty: ()
+                                                    Line 6: factor: (
+                                                      id: 1
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              Line 6: empty: ()
+                                              Line 6: empty: ()
+                                            )
+                                          )
+                                          Line 6: empty: ()
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                          Line 6: empty: ()
+                          Line 6: empty: ()
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+            Line 7: empty: ()
+          )
+        )
+      )
+    )
+    Line 9: declaration list: (
+      Line 9: declaration: (
+        Line 9: function_dec: (
+          type: void
+          id: main
+          Line 9: params: (
+            Line 9: void: ()
+          )
+          Line 10: compound statement: (
+            Line 10: local decs: (
+              Line 10: var_dec: (
+                type: int
+                Line 10: empty: ()
+                id: x
+                Line 10: empty: ()
+              )
+              Line 11: empty: ()
+            )
+            Line 11: statement list: (
+              Line 11: statement: (
+                Line 11: expression statement: (
+                  Line 11: expression: (
+                    Line 11: assignment: (
+                      Line 11: var: (
+                        Line 11: empty: ()
+                        id: x
+                        Line 11: empty: ()
+                      )
+                      Line 11: expression: (
+                        Line 11: comp exp: (
+                          Line 11: E: (
+                            Line 11: empty: ()
+                            Line 11: empty: ()
+                            Line 11: T: (
+                              Line 11: empty: ()
+                              Line 11: empty: ()
+                              Line 11: F: (
+                                Line 11: empty: ()
+                                Line 11: factor: (
+                                  id: 1
+                                )
+                              )
+                            )
+                          )
+                          Line 11: empty: ()
+                          Line 11: empty: ()
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+              Line 12: statement list: (
+                Line 12: statement: (
+                  Line 12: while statement: (
+                    Line 12: expression: (
+                      Line 12: comp exp: (
+                        Line 12: E: (
+                          Line 12: empty: ()
+                          Line 12: empty: ()
+                          Line 12: T: (
+                            Line 12: empty: ()
+                            Line 12: empty: ()
+                            Line 12: F: (
+                              Line 12: empty: ()
+                              Line 12: factor: (
+                                id: x
+                              )
+                            )
+                          )
+                        )
+                        op: <
+                        Line 12: E: (
+                          Line 12: empty: ()
+                          Line 12: empty: ()
+                          Line 12: T: (
+                            Line 12: empty: ()
+                            Line 12: empty: ()
+                            Line 12: F: (
+                              Line 12: empty: ()
+                              Line 12: factor: (
+                                id: 10
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                    Line 12: statement: (
+                      Line 13: compound statement: (
+                        Line 13: local decs: (
+                          Line 13: empty: ()
+                          Line 13: empty: ()
+                        )
+                        Line 13: statement list: (
+                          Line 13: statement: (
+                            Line 13: write statement: (
+                              Line 13: expression: (
+                                Line 13: comp exp: (
+                                  Line 13: E: (
+                                    Line 13: empty: ()
+                                    Line 13: empty: ()
+                                    Line 13: T: (
+                                      Line 13: empty: ()
+                                      Line 13: empty: ()
+                                      Line 13: F: (
+                                        Line 13: empty: ()
+                                        Line 13: factor: (
+                                          id: x
+                                        )
+                                      )
+                                    )
+                                  )
+                                  Line 13: empty: ()
+                                  Line 13: empty: ()
+                                )
+                              )
+                            )
+                          )
+                          Line 14: statement list: (
+                            Line 14: statement: (
+                              Line 14: write statement: (
+                                Line 14: expression: (
+                                  Line 14: comp exp: (
+                                    Line 14: E: (
+                                      Line 14: empty: ()
+                                      Line 14: empty: ()
+                                      Line 14: T: (
+                                        Line 14: empty: ()
+                                        Line 14: empty: ()
+                                        Line 14: F: (
+                                          Line 14: empty: ()
+                                          Line 14: factor: (
+                                            Line 14: fun call: (
+                                              id: fact
+                                              Line 14: args: (
+                                                Line 14: arg list: (
+                                                  Line 14: expression: (
+                                                    Line 14: comp exp: (
+                                                      Line 14: E: (
+                                                        Line 14: empty: ()
+                                                        Line 14: empty: ()
+                                                        Line 14: T: (
+                                                          Line 14: empty: ()
+                                                          Line 14: empty: ()
+                                                          Line 14: F: (
+                                                            Line 14: empty: ()
+                                                            Line 14: factor: (
+                                                              id: x
+                                                            )
+                                                          )
+                                                        )
+                                                      )
+                                                      Line 14: empty: ()
+                                                      Line 14: empty: ()
+                                                    )
+                                                  )
+                                                  Line 14: empty: ()
+                                                )
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 14: empty: ()
+                                    Line 14: empty: ()
+                                  )
+                                )
+                              )
+                            )
+                            Line 15: statement list: (
+                              Line 15: statement: (
+                                Line 15: write statement: (
+                                  Line 15: empty: ()
+                                )
+                              )
+                              Line 16: statement list: (
+                                Line 16: statement: (
+                                  Line 16: expression statement: (
+                                    Line 16: expression: (
+                                      Line 16: assignment: (
+                                        Line 16: var: (
+                                          Line 16: empty: ()
+                                          id: x
+                                          Line 16: empty: ()
+                                        )
+                                        Line 16: expression: (
+                                          Line 16: comp exp: (
+                                            Line 16: E: (
+                                              Line 16: E: (
+                                                Line 16: empty: ()
+                                                Line 16: empty: ()
+                                                Line 16: T: (
+                                                  Line 16: empty: ()
+                                                  Line 16: empty: ()
+                                                  Line 16: F: (
+                                                    Line 16: empty: ()
+                                                    Line 16: factor: (
+                                                      id: x
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              op: +
+                                              Line 16: T: (
+                                                Line 16: empty: ()
+                                                Line 16: empty: ()
+                                                Line 16: F: (
+                                                  Line 16: empty: ()
+                                                  Line 16: factor: (
+                                                    id: 1
+                                                  )
+                                                )
+                                              )
+                                            )
+                                            Line 16: empty: ()
+                                            Line 16: empty: ()
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                                Line 17: empty: ()
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 18: empty: ()
+              )
+            )
+          )
+        )
+      )
+      Line -1: empty: ()
+    )
+  )
+)
+test/testFiles/P12.bpl
+Line 2: program: (
+  Line 2: declaration list: (
+    Line 2: declaration: (
+      Line 2: var_dec: (
+        type: int
+        Line 2: empty: ()
+        id: x
+        Line 2: []: (
+          id: 10
+        )
+      )
+    )
+    Line 4: declaration list: (
+      Line 4: declaration: (
+        Line 4: function_dec: (
+          type: void
+          id: switch
+          Line 4: params: (
+            Line 4: param list: (
+              Line 4: param: (
+                type: int
+                Line 4: empty: ()
+                id: A
+                Line 4: []: ()
+              )
+              Line 4: param list: (
+                Line 4: param: (
+                  type: int
+                  Line 4: empty: ()
+                  id: i
+                  Line 4: empty: ()
+                )
+                Line 4: param list: (
+                  Line 4: param: (
+                    type: int
+                    Line 4: empty: ()
+                    id: j
+                    Line 4: empty: ()
+                  )
+                  Line 4: empty: ()
+                )
+              )
+            )
+          )
+          Line 5: compound statement: (
+            Line 5: local decs: (
+              Line 5: var_dec: (
+                type: int
+                Line 5: empty: ()
+                id: temp
+                Line 5: empty: ()
+              )
+              Line 6: empty: ()
+            )
+            Line 6: statement list: (
+              Line 6: statement: (
+                Line 6: if statement: (
+                  Line 6: expression: (
+                    Line 6: comp exp: (
+                      Line 6: E: (
+                        Line 6: empty: ()
+                        Line 6: empty: ()
+                        Line 6: T: (
+                          Line 6: empty: ()
+                          Line 6: empty: ()
+                          Line 6: F: (
+                            Line 6: empty: ()
+                            Line 6: factor: (
+                              id: i
+                            )
+                          )
+                        )
+                      )
+                      op: !=
+                      Line 6: E: (
+                        Line 6: empty: ()
+                        Line 6: empty: ()
+                        Line 6: T: (
+                          Line 6: empty: ()
+                          Line 6: empty: ()
+                          Line 6: F: (
+                            Line 6: empty: ()
+                            Line 6: factor: (
+                              id: j
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                  Line 6: statement: (
+                    Line 7: compound statement: (
+                      Line 7: local decs: (
+                        Line 7: empty: ()
+                        Line 7: empty: ()
+                      )
+                      Line 7: statement list: (
+                        Line 7: statement: (
+                          Line 7: expression statement: (
+                            Line 7: expression: (
+                              Line 7: assignment: (
+                                Line 7: var: (
+                                  Line 7: empty: ()
+                                  id: temp
+                                  Line 7: empty: ()
+                                )
+                                Line 7: expression: (
+                                  Line 7: comp exp: (
+                                    Line 7: E: (
+                                      Line 7: empty: ()
+                                      Line 7: empty: ()
+                                      Line 7: T: (
+                                        Line 7: empty: ()
+                                        Line 7: empty: ()
+                                        Line 7: F: (
+                                          Line 7: empty: ()
+                                          Line 7: factor: (
+                                            Line 7: array index: (
+                                              id: A
+                                              Line 7: expression: (
+                                                Line 7: comp exp: (
+                                                  Line 7: E: (
+                                                    Line 7: empty: ()
+                                                    Line 7: empty: ()
+                                                    Line 7: T: (
+                                                      Line 7: empty: ()
+                                                      Line 7: empty: ()
+                                                      Line 7: F: (
+                                                        Line 7: empty: ()
+                                                        Line 7: factor: (
+                                                          id: i
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                  Line 7: empty: ()
+                                                  Line 7: empty: ()
+                                                )
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 7: empty: ()
+                                    Line 7: empty: ()
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                        Line 8: statement list: (
+                          Line 8: statement: (
+                            Line 8: expression statement: (
+                              Line 8: expression: (
+                                Line 8: assignment: (
+                                  Line 8: var: (
+                                    Line 8: empty: ()
+                                    id: A
+                                    Line 8: expression: (
+                                      Line 8: comp exp: (
+                                        Line 8: E: (
+                                          Line 8: empty: ()
+                                          Line 8: empty: ()
+                                          Line 8: T: (
+                                            Line 8: empty: ()
+                                            Line 8: empty: ()
+                                            Line 8: F: (
+                                              Line 8: empty: ()
+                                              Line 8: factor: (
+                                                id: i
+                                              )
+                                            )
+                                          )
+                                        )
+                                        Line 8: empty: ()
+                                        Line 8: empty: ()
+                                      )
+                                    )
+                                  )
+                                  Line 8: expression: (
+                                    Line 8: comp exp: (
+                                      Line 8: E: (
+                                        Line 8: empty: ()
+                                        Line 8: empty: ()
+                                        Line 8: T: (
+                                          Line 8: empty: ()
+                                          Line 8: empty: ()
+                                          Line 8: F: (
+                                            Line 8: empty: ()
+                                            Line 8: factor: (
+                                              Line 8: array index: (
+                                                id: A
+                                                Line 8: expression: (
+                                                  Line 8: comp exp: (
+                                                    Line 8: E: (
+                                                      Line 8: empty: ()
+                                                      Line 8: empty: ()
+                                                      Line 8: T: (
+                                                        Line 8: empty: ()
+                                                        Line 8: empty: ()
+                                                        Line 8: F: (
+                                                          Line 8: empty: ()
+                                                          Line 8: factor: (
+                                                            id: j
+                                                          )
+                                                        )
+                                                      )
+                                                    )
+                                                    Line 8: empty: ()
+                                                    Line 8: empty: ()
+                                                  )
+                                                )
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                      Line 8: empty: ()
+                                      Line 8: empty: ()
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                          Line 9: statement list: (
+                            Line 9: statement: (
+                              Line 9: expression statement: (
+                                Line 9: expression: (
+                                  Line 9: assignment: (
+                                    Line 9: var: (
+                                      Line 9: empty: ()
+                                      id: A
+                                      Line 9: expression: (
+                                        Line 9: comp exp: (
+                                          Line 9: E: (
+                                            Line 9: empty: ()
+                                            Line 9: empty: ()
+                                            Line 9: T: (
+                                              Line 9: empty: ()
+                                              Line 9: empty: ()
+                                              Line 9: F: (
+                                                Line 9: empty: ()
+                                                Line 9: factor: (
+                                                  id: j
+                                                )
+                                              )
+                                            )
+                                          )
+                                          Line 9: empty: ()
+                                          Line 9: empty: ()
+                                        )
+                                      )
+                                    )
+                                    Line 9: expression: (
+                                      Line 9: comp exp: (
+                                        Line 9: E: (
+                                          Line 9: empty: ()
+                                          Line 9: empty: ()
+                                          Line 9: T: (
+                                            Line 9: empty: ()
+                                            Line 9: empty: ()
+                                            Line 9: F: (
+                                              Line 9: empty: ()
+                                              Line 9: factor: (
+                                                id: temp
+                                              )
+                                            )
+                                          )
+                                        )
+                                        Line 9: empty: ()
+                                        Line 9: empty: ()
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                            Line 10: empty: ()
+                          )
+                        )
+                      )
+                    )
+                  )
+                  Line 11: empty: ()
+                )
+              )
+              Line 11: empty: ()
+            )
+          )
+        )
+      )
+      Line 13: declaration list: (
+        Line 13: declaration: (
+          Line 13: function_dec: (
+            type: void
+            id: sort
+            Line 13: params: (
+              Line 13: param list: (
+                Line 13: param: (
+                  type: int
+                  Line 13: empty: ()
+                  id: A
+                  Line 13: []: ()
+                )
+                Line 13: param list: (
+                  Line 13: param: (
+                    type: int
+                    Line 13: empty: ()
+                    id: first
+                    Line 13: empty: ()
+                  )
+                  Line 13: param list: (
+                    Line 13: param: (
+                      type: int
+                      Line 13: empty: ()
+                      id: last
+                      Line 13: empty: ()
+                    )
+                    Line 13: empty: ()
+                  )
+                )
+              )
+            )
+            Line 14: compound statement: (
+              Line 14: local decs: (
+                Line 14: var_dec: (
+                  type: int
+                  Line 14: empty: ()
+                  id: i
+                  Line 14: empty: ()
+                )
+                Line 15: local decs: (
+                  Line 15: var_dec: (
+                    type: int
+                    Line 15: empty: ()
+                    id: j
+                    Line 15: empty: ()
+                  )
+                  Line 16: local decs: (
+                    Line 16: var_dec: (
+                      type: int
+                      Line 16: empty: ()
+                      id: small
+                      Line 16: empty: ()
+                    )
+                    Line 18: empty: ()
+                  )
+                )
+              )
+              Line 18: statement list: (
+                Line 18: statement: (
+                  Line 18: expression statement: (
+                    Line 18: expression: (
+                      Line 18: assignment: (
+                        Line 18: var: (
+                          Line 18: empty: ()
+                          id: i
+                          Line 18: empty: ()
+                        )
+                        Line 18: expression: (
+                          Line 18: comp exp: (
+                            Line 18: E: (
+                              Line 18: empty: ()
+                              Line 18: empty: ()
+                              Line 18: T: (
+                                Line 18: empty: ()
+                                Line 18: empty: ()
+                                Line 18: F: (
+                                  Line 18: empty: ()
+                                  Line 18: factor: (
+                                    id: first
+                                  )
+                                )
+                              )
+                            )
+                            Line 18: empty: ()
+                            Line 18: empty: ()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 19: statement list: (
+                  Line 19: statement: (
+                    Line 19: while statement: (
+                      Line 19: expression: (
+                        Line 19: comp exp: (
+                          Line 19: E: (
+                            Line 19: empty: ()
+                            Line 19: empty: ()
+                            Line 19: T: (
+                              Line 19: empty: ()
+                              Line 19: empty: ()
+                              Line 19: F: (
+                                Line 19: empty: ()
+                                Line 19: factor: (
+                                  id: i
+                                )
+                              )
+                            )
+                          )
+                          op: <
+                          Line 19: E: (
+                            Line 19: E: (
+                              Line 19: empty: ()
+                              Line 19: empty: ()
+                              Line 19: T: (
+                                Line 19: empty: ()
+                                Line 19: empty: ()
+                                Line 19: F: (
+                                  Line 19: empty: ()
+                                  Line 19: factor: (
+                                    id: last
+                                  )
+                                )
+                              )
+                            )
+                            op: -
+                            Line 19: T: (
+                              Line 19: empty: ()
+                              Line 19: empty: ()
+                              Line 19: F: (
+                                Line 19: empty: ()
+                                Line 19: factor: (
+                                  id: 1
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                      Line 19: statement: (
+                        Line 21: compound statement: (
+                          Line 21: local decs: (
+                            Line 21: empty: ()
+                            Line 21: empty: ()
+                          )
+                          Line 21: statement list: (
+                            Line 21: statement: (
+                              Line 21: expression statement: (
+                                Line 21: expression: (
+                                  Line 21: assignment: (
+                                    Line 21: var: (
+                                      Line 21: empty: ()
+                                      id: j
+                                      Line 21: empty: ()
+                                    )
+                                    Line 21: expression: (
+                                      Line 21: comp exp: (
+                                        Line 21: E: (
+                                          Line 21: empty: ()
+                                          Line 21: empty: ()
+                                          Line 21: T: (
+                                            Line 21: empty: ()
+                                            Line 21: empty: ()
+                                            Line 21: F: (
+                                              Line 21: empty: ()
+                                              Line 21: factor: (
+                                                id: i
+                                              )
+                                            )
+                                          )
+                                        )
+                                        Line 21: empty: ()
+                                        Line 21: empty: ()
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                            Line 22: statement list: (
+                              Line 22: statement: (
+                                Line 22: expression statement: (
+                                  Line 22: expression: (
+                                    Line 22: assignment: (
+                                      Line 22: var: (
+                                        Line 22: empty: ()
+                                        id: small
+                                        Line 22: empty: ()
+                                      )
+                                      Line 22: expression: (
+                                        Line 22: comp exp: (
+                                          Line 22: E: (
+                                            Line 22: empty: ()
+                                            Line 22: empty: ()
+                                            Line 22: T: (
+                                              Line 22: empty: ()
+                                              Line 22: empty: ()
+                                              Line 22: F: (
+                                                Line 22: empty: ()
+                                                Line 22: factor: (
+                                                  id: j
+                                                )
+                                              )
+                                            )
+                                          )
+                                          Line 22: empty: ()
+                                          Line 22: empty: ()
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                              Line 23: statement list: (
+                                Line 23: statement: (
+                                  Line 23: while statement: (
+                                    Line 23: expression: (
+                                      Line 23: comp exp: (
+                                        Line 23: E: (
+                                          Line 23: empty: ()
+                                          Line 23: empty: ()
+                                          Line 23: T: (
+                                            Line 23: empty: ()
+                                            Line 23: empty: ()
+                                            Line 23: F: (
+                                              Line 23: empty: ()
+                                              Line 23: factor: (
+                                                id: j
+                                              )
+                                            )
+                                          )
+                                        )
+                                        op: <
+                                        Line 23: E: (
+                                          Line 23: empty: ()
+                                          Line 23: empty: ()
+                                          Line 23: T: (
+                                            Line 23: empty: ()
+                                            Line 23: empty: ()
+                                            Line 23: F: (
+                                              Line 23: empty: ()
+                                              Line 23: factor: (
+                                                id: last
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 23: statement: (
+                                      Line 24: compound statement: (
+                                        Line 24: local decs: (
+                                          Line 24: empty: ()
+                                          Line 24: empty: ()
+                                        )
+                                        Line 24: statement list: (
+                                          Line 24: statement: (
+                                            Line 24: if statement: (
+                                              Line 24: expression: (
+                                                Line 24: comp exp: (
+                                                  Line 24: E: (
+                                                    Line 24: empty: ()
+                                                    Line 24: empty: ()
+                                                    Line 24: T: (
+                                                      Line 24: empty: ()
+                                                      Line 24: empty: ()
+                                                      Line 24: F: (
+                                                        Line 24: empty: ()
+                                                        Line 24: factor: (
+                                                          Line 24: array index: (
+                                                            id: A
+                                                            Line 24: expression: (
+                                                              Line 24: comp exp: (
+                                                                Line 24: E: (
+                                                                  Line 24: empty: ()
+                                                                  Line 24: empty: ()
+                                                                  Line 24: T: (
+                                                                    Line 24: empty: ()
+                                                                    Line 24: empty: ()
+                                                                    Line 24: F: (
+                                                                      Line 24: empty: ()
+                                                                      Line 24: factor: (
+                                                                        id: j
+                                                                      )
+                                                                    )
+                                                                  )
+                                                                )
+                                                                Line 24: empty: ()
+                                                                Line 24: empty: ()
+                                                              )
+                                                            )
+                                                          )
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                  op: <
+                                                  Line 24: E: (
+                                                    Line 24: empty: ()
+                                                    Line 24: empty: ()
+                                                    Line 24: T: (
+                                                      Line 24: empty: ()
+                                                      Line 24: empty: ()
+                                                      Line 24: F: (
+                                                        Line 24: empty: ()
+                                                        Line 24: factor: (
+                                                          Line 24: array index: (
+                                                            id: A
+                                                            Line 24: expression: (
+                                                              Line 24: comp exp: (
+                                                                Line 24: E: (
+                                                                  Line 24: empty: ()
+                                                                  Line 24: empty: ()
+                                                                  Line 24: T: (
+                                                                    Line 24: empty: ()
+                                                                    Line 24: empty: ()
+                                                                    Line 24: F: (
+                                                                      Line 24: empty: ()
+                                                                      Line 24: factor: (
+                                                                        id: small
+                                                                      )
+                                                                    )
+                                                                  )
+                                                                )
+                                                                Line 24: empty: ()
+                                                                Line 24: empty: ()
+                                                              )
+                                                            )
+                                                          )
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              Line 25: statement: (
+                                                Line 25: expression statement: (
+                                                  Line 25: expression: (
+                                                    Line 25: assignment: (
+                                                      Line 25: var: (
+                                                        Line 25: empty: ()
+                                                        id: small
+                                                        Line 25: empty: ()
+                                                      )
+                                                      Line 25: expression: (
+                                                        Line 25: comp exp: (
+                                                          Line 25: E: (
+                                                            Line 25: empty: ()
+                                                            Line 25: empty: ()
+                                                            Line 25: T: (
+                                                              Line 25: empty: ()
+                                                              Line 25: empty: ()
+                                                              Line 25: F: (
+                                                                Line 25: empty: ()
+                                                                Line 25: factor: (
+                                                                  id: j
+                                                                )
+                                                              )
+                                                            )
+                                                          )
+                                                          Line 25: empty: ()
+                                                          Line 25: empty: ()
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              Line 26: empty: ()
+                                            )
+                                          )
+                                          Line 26: statement list: (
+                                            Line 26: statement: (
+                                              Line 26: expression statement: (
+                                                Line 26: expression: (
+                                                  Line 26: assignment: (
+                                                    Line 26: var: (
+                                                      Line 26: empty: ()
+                                                      id: j
+                                                      Line 26: empty: ()
+                                                    )
+                                                    Line 26: expression: (
+                                                      Line 26: comp exp: (
+                                                        Line 26: E: (
+                                                          Line 26: E: (
+                                                            Line 26: empty: ()
+                                                            Line 26: empty: ()
+                                                            Line 26: T: (
+                                                              Line 26: empty: ()
+                                                              Line 26: empty: ()
+                                                              Line 26: F: (
+                                                                Line 26: empty: ()
+                                                                Line 26: factor: (
+                                                                  id: j
+                                                                )
+                                                              )
+                                                            )
+                                                          )
+                                                          op: +
+                                                          Line 26: T: (
+                                                            Line 26: empty: ()
+                                                            Line 26: empty: ()
+                                                            Line 26: F: (
+                                                              Line 26: empty: ()
+                                                              Line 26: factor: (
+                                                                id: 1
+                                                              )
+                                                            )
+                                                          )
+                                                        )
+                                                        Line 26: empty: ()
+                                                        Line 26: empty: ()
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                            )
+                                            Line 27: empty: ()
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                                Line 28: statement list: (
+                                  Line 28: statement: (
+                                    Line 28: expression statement: (
+                                      Line 28: expression: (
+                                        Line 28: comp exp: (
+                                          Line 28: E: (
+                                            Line 28: empty: ()
+                                            Line 28: empty: ()
+                                            Line 28: T: (
+                                              Line 28: empty: ()
+                                              Line 28: empty: ()
+                                              Line 28: F: (
+                                                Line 28: empty: ()
+                                                Line 28: factor: (
+                                                  Line 28: fun call: (
+                                                    id: switch
+                                                    Line 28: args: (
+                                                      Line 28: arg list: (
+                                                        Line 28: expression: (
+                                                          Line 28: comp exp: (
+                                                            Line 28: E: (
+                                                              Line 28: empty: ()
+                                                              Line 28: empty: ()
+                                                              Line 28: T: (
+                                                                Line 28: empty: ()
+                                                                Line 28: empty: ()
+                                                                Line 28: F: (
+                                                                  Line 28: empty: ()
+                                                                  Line 28: factor: (
+                                                                    id: A
+                                                                  )
+                                                                )
+                                                              )
+                                                            )
+                                                            Line 28: empty: ()
+                                                            Line 28: empty: ()
+                                                          )
+                                                        )
+                                                        Line 28: arg list: (
+                                                          Line 28: expression: (
+                                                            Line 28: comp exp: (
+                                                              Line 28: E: (
+                                                                Line 28: empty: ()
+                                                                Line 28: empty: ()
+                                                                Line 28: T: (
+                                                                  Line 28: empty: ()
+                                                                  Line 28: empty: ()
+                                                                  Line 28: F: (
+                                                                    Line 28: empty: ()
+                                                                    Line 28: factor: (
+                                                                      id: i
+                                                                    )
+                                                                  )
+                                                                )
+                                                              )
+                                                              Line 28: empty: ()
+                                                              Line 28: empty: ()
+                                                            )
+                                                          )
+                                                          Line 28: arg list: (
+                                                            Line 28: expression: (
+                                                              Line 28: comp exp: (
+                                                                Line 28: E: (
+                                                                  Line 28: empty: ()
+                                                                  Line 28: empty: ()
+                                                                  Line 28: T: (
+                                                                    Line 28: empty: ()
+                                                                    Line 28: empty: ()
+                                                                    Line 28: F: (
+                                                                      Line 28: empty: ()
+                                                                      Line 28: factor: (
+                                                                        id: small
+                                                                      )
+                                                                    )
+                                                                  )
+                                                                )
+                                                                Line 28: empty: ()
+                                                                Line 28: empty: ()
+                                                              )
+                                                            )
+                                                            Line 28: empty: ()
+                                                          )
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                            )
+                                          )
+                                          Line 28: empty: ()
+                                          Line 28: empty: ()
+                                        )
+                                      )
+                                    )
+                                  )
+                                  Line 29: statement list: (
+                                    Line 29: statement: (
+                                      Line 29: expression statement: (
+                                        Line 29: expression: (
+                                          Line 29: assignment: (
+                                            Line 29: var: (
+                                              Line 29: empty: ()
+                                              id: i
+                                              Line 29: empty: ()
+                                            )
+                                            Line 29: expression: (
+                                              Line 29: comp exp: (
+                                                Line 29: E: (
+                                                  Line 29: E: (
+                                                    Line 29: empty: ()
+                                                    Line 29: empty: ()
+                                                    Line 29: T: (
+                                                      Line 29: empty: ()
+                                                      Line 29: empty: ()
+                                                      Line 29: F: (
+                                                        Line 29: empty: ()
+                                                        Line 29: factor: (
+                                                          id: i
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                  op: +
+                                                  Line 29: T: (
+                                                    Line 29: empty: ()
+                                                    Line 29: empty: ()
+                                                    Line 29: F: (
+                                                      Line 29: empty: ()
+                                                      Line 29: factor: (
+                                                        id: 1
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                                Line 29: empty: ()
+                                                Line 29: empty: ()
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 30: empty: ()
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                  Line 31: empty: ()
+                )
+              )
+            )
+          )
+        )
+        Line 34: declaration list: (
+          Line 34: declaration: (
+            Line 34: function_dec: (
+              type: void
+              id: main
+              Line 34: params: (
+                Line 34: void: ()
+              )
+              Line 35: compound statement: (
+                Line 35: local decs: (
+                  Line 35: var_dec: (
+                    type: int
+                    Line 35: empty: ()
+                    id: i
+                    Line 35: empty: ()
+                  )
+                  Line 37: empty: ()
+                )
+                Line 37: statement list: (
+                  Line 37: statement: (
+                    Line 37: expression statement: (
+                      Line 37: expression: (
+                        Line 37: assignment: (
+                          Line 37: var: (
+                            Line 37: empty: ()
+                            id: i
+                            Line 37: empty: ()
+                          )
+                          Line 37: expression: (
+                            Line 37: comp exp: (
+                              Line 37: E: (
+                                Line 37: empty: ()
+                                Line 37: empty: ()
+                                Line 37: T: (
+                                  Line 37: empty: ()
+                                  Line 37: empty: ()
+                                  Line 37: F: (
+                                    Line 37: empty: ()
+                                    Line 37: factor: (
+                                      id: 0
+                                    )
+                                  )
+                                )
+                              )
+                              Line 37: empty: ()
+                              Line 37: empty: ()
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                  Line 38: statement list: (
+                    Line 38: statement: (
+                      Line 38: while statement: (
+                        Line 38: expression: (
+                          Line 38: comp exp: (
+                            Line 38: E: (
+                              Line 38: empty: ()
+                              Line 38: empty: ()
+                              Line 38: T: (
+                                Line 38: empty: ()
+                                Line 38: empty: ()
+                                Line 38: F: (
+                                  Line 38: empty: ()
+                                  Line 38: factor: (
+                                    id: i
+                                  )
+                                )
+                              )
+                            )
+                            op: <
+                            Line 38: E: (
+                              Line 38: empty: ()
+                              Line 38: empty: ()
+                              Line 38: T: (
+                                Line 38: empty: ()
+                                Line 38: empty: ()
+                                Line 38: F: (
+                                  Line 38: empty: ()
+                                  Line 38: factor: (
+                                    id: 10
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                        Line 38: statement: (
+                          Line 39: compound statement: (
+                            Line 39: local decs: (
+                              Line 39: empty: ()
+                              Line 39: empty: ()
+                            )
+                            Line 39: statement list: (
+                              Line 39: statement: (
+                                Line 39: expression statement: (
+                                  Line 39: expression: (
+                                    Line 39: assignment: (
+                                      Line 39: var: (
+                                        Line 39: empty: ()
+                                        id: x
+                                        Line 39: expression: (
+                                          Line 39: comp exp: (
+                                            Line 39: E: (
+                                              Line 39: empty: ()
+                                              Line 39: empty: ()
+                                              Line 39: T: (
+                                                Line 39: empty: ()
+                                                Line 39: empty: ()
+                                                Line 39: F: (
+                                                  Line 39: empty: ()
+                                                  Line 39: factor: (
+                                                    id: i
+                                                  )
+                                                )
+                                              )
+                                            )
+                                            Line 39: empty: ()
+                                            Line 39: empty: ()
+                                          )
+                                        )
+                                      )
+                                      Line 39: expression: (
+                                        Line 39: comp exp: (
+                                          Line 39: E: (
+                                            Line 39: empty: ()
+                                            Line 39: empty: ()
+                                            Line 39: T: (
+                                              Line 39: empty: ()
+                                              Line 39: empty: ()
+                                              Line 39: F: (
+                                                Line 39: empty: ()
+                                                Line 39: factor: (
+                                                  Line 39: read: ()
+                                                )
+                                              )
+                                            )
+                                          )
+                                          Line 39: empty: ()
+                                          Line 39: empty: ()
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                              Line 40: statement list: (
+                                Line 40: statement: (
+                                  Line 40: expression statement: (
+                                    Line 40: expression: (
+                                      Line 40: assignment: (
+                                        Line 40: var: (
+                                          Line 40: empty: ()
+                                          id: i
+                                          Line 40: empty: ()
+                                        )
+                                        Line 40: expression: (
+                                          Line 40: comp exp: (
+                                            Line 40: E: (
+                                              Line 40: E: (
+                                                Line 40: empty: ()
+                                                Line 40: empty: ()
+                                                Line 40: T: (
+                                                  Line 40: empty: ()
+                                                  Line 40: empty: ()
+                                                  Line 40: F: (
+                                                    Line 40: empty: ()
+                                                    Line 40: factor: (
+                                                      id: i
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              op: +
+                                              Line 40: T: (
+                                                Line 40: empty: ()
+                                                Line 40: empty: ()
+                                                Line 40: F: (
+                                                  Line 40: empty: ()
+                                                  Line 40: factor: (
+                                                    id: 1
+                                                  )
+                                                )
+                                              )
+                                            )
+                                            Line 40: empty: ()
+                                            Line 40: empty: ()
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                                Line 41: empty: ()
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                    Line 42: statement list: (
+                      Line 42: statement: (
+                        Line 42: expression statement: (
+                          Line 42: expression: (
+                            Line 42: comp exp: (
+                              Line 42: E: (
+                                Line 42: empty: ()
+                                Line 42: empty: ()
+                                Line 42: T: (
+                                  Line 42: empty: ()
+                                  Line 42: empty: ()
+                                  Line 42: F: (
+                                    Line 42: empty: ()
+                                    Line 42: factor: (
+                                      Line 42: fun call: (
+                                        id: sort
+                                        Line 42: args: (
+                                          Line 42: arg list: (
+                                            Line 42: expression: (
+                                              Line 42: comp exp: (
+                                                Line 42: E: (
+                                                  Line 42: empty: ()
+                                                  Line 42: empty: ()
+                                                  Line 42: T: (
+                                                    Line 42: empty: ()
+                                                    Line 42: empty: ()
+                                                    Line 42: F: (
+                                                      Line 42: empty: ()
+                                                      Line 42: factor: (
+                                                        id: x
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                                Line 42: empty: ()
+                                                Line 42: empty: ()
+                                              )
+                                            )
+                                            Line 42: arg list: (
+                                              Line 42: expression: (
+                                                Line 42: comp exp: (
+                                                  Line 42: E: (
+                                                    Line 42: empty: ()
+                                                    Line 42: empty: ()
+                                                    Line 42: T: (
+                                                      Line 42: empty: ()
+                                                      Line 42: empty: ()
+                                                      Line 42: F: (
+                                                        Line 42: empty: ()
+                                                        Line 42: factor: (
+                                                          id: 0
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                  Line 42: empty: ()
+                                                  Line 42: empty: ()
+                                                )
+                                              )
+                                              Line 42: arg list: (
+                                                Line 42: expression: (
+                                                  Line 42: comp exp: (
+                                                    Line 42: E: (
+                                                      Line 42: empty: ()
+                                                      Line 42: empty: ()
+                                                      Line 42: T: (
+                                                        Line 42: empty: ()
+                                                        Line 42: empty: ()
+                                                        Line 42: F: (
+                                                          Line 42: empty: ()
+                                                          Line 42: factor: (
+                                                            id: 10
+                                                          )
+                                                        )
+                                                      )
+                                                    )
+                                                    Line 42: empty: ()
+                                                    Line 42: empty: ()
+                                                  )
+                                                )
+                                                Line 42: empty: ()
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                              Line 42: empty: ()
+                              Line 42: empty: ()
+                            )
+                          )
+                        )
+                      )
+                      Line 43: statement list: (
+                        Line 43: statement: (
+                          Line 43: expression statement: (
+                            Line 43: expression: (
+                              Line 43: assignment: (
+                                Line 43: var: (
+                                  Line 43: empty: ()
+                                  id: i
+                                  Line 43: empty: ()
+                                )
+                                Line 43: expression: (
+                                  Line 43: comp exp: (
+                                    Line 43: E: (
+                                      Line 43: empty: ()
+                                      Line 43: empty: ()
+                                      Line 43: T: (
+                                        Line 43: empty: ()
+                                        Line 43: empty: ()
+                                        Line 43: F: (
+                                          Line 43: empty: ()
+                                          Line 43: factor: (
+                                            id: 0
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 43: empty: ()
+                                    Line 43: empty: ()
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                        Line 44: statement list: (
+                          Line 44: statement: (
+                            Line 44: while statement: (
+                              Line 44: expression: (
+                                Line 44: comp exp: (
+                                  Line 44: E: (
+                                    Line 44: empty: ()
+                                    Line 44: empty: ()
+                                    Line 44: T: (
+                                      Line 44: empty: ()
+                                      Line 44: empty: ()
+                                      Line 44: F: (
+                                        Line 44: empty: ()
+                                        Line 44: factor: (
+                                          id: i
+                                        )
+                                      )
+                                    )
+                                  )
+                                  op: <
+                                  Line 44: E: (
+                                    Line 44: empty: ()
+                                    Line 44: empty: ()
+                                    Line 44: T: (
+                                      Line 44: empty: ()
+                                      Line 44: empty: ()
+                                      Line 44: F: (
+                                        Line 44: empty: ()
+                                        Line 44: factor: (
+                                          id: 10
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                              Line 44: statement: (
+                                Line 45: compound statement: (
+                                  Line 45: local decs: (
+                                    Line 45: empty: ()
+                                    Line 45: empty: ()
+                                  )
+                                  Line 45: statement list: (
+                                    Line 45: statement: (
+                                      Line 45: write statement: (
+                                        Line 45: expression: (
+                                          Line 45: comp exp: (
+                                            Line 45: E: (
+                                              Line 45: empty: ()
+                                              Line 45: empty: ()
+                                              Line 45: T: (
+                                                Line 45: empty: ()
+                                                Line 45: empty: ()
+                                                Line 45: F: (
+                                                  Line 45: empty: ()
+                                                  Line 45: factor: (
+                                                    Line 45: array index: (
+                                                      id: x
+                                                      Line 45: expression: (
+                                                        Line 45: comp exp: (
+                                                          Line 45: E: (
+                                                            Line 45: empty: ()
+                                                            Line 45: empty: ()
+                                                            Line 45: T: (
+                                                              Line 45: empty: ()
+                                                              Line 45: empty: ()
+                                                              Line 45: F: (
+                                                                Line 45: empty: ()
+                                                                Line 45: factor: (
+                                                                  id: i
+                                                                )
+                                                              )
+                                                            )
+                                                          )
+                                                          Line 45: empty: ()
+                                                          Line 45: empty: ()
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                            )
+                                            Line 45: empty: ()
+                                            Line 45: empty: ()
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 46: statement list: (
+                                      Line 46: statement: (
+                                        Line 46: expression statement: (
+                                          Line 46: expression: (
+                                            Line 46: assignment: (
+                                              Line 46: var: (
+                                                Line 46: empty: ()
+                                                id: i
+                                                Line 46: empty: ()
+                                              )
+                                              Line 46: expression: (
+                                                Line 46: comp exp: (
+                                                  Line 46: E: (
+                                                    Line 46: E: (
+                                                      Line 46: empty: ()
+                                                      Line 46: empty: ()
+                                                      Line 46: T: (
+                                                        Line 46: empty: ()
+                                                        Line 46: empty: ()
+                                                        Line 46: F: (
+                                                          Line 46: empty: ()
+                                                          Line 46: factor: (
+                                                            id: i
+                                                          )
+                                                        )
+                                                      )
+                                                    )
+                                                    op: +
+                                                    Line 46: T: (
+                                                      Line 46: empty: ()
+                                                      Line 46: empty: ()
+                                                      Line 46: F: (
+                                                        Line 46: empty: ()
+                                                        Line 46: factor: (
+                                                          id: 1
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                  Line 46: empty: ()
+                                                  Line 46: empty: ()
+                                                )
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                      Line 47: empty: ()
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                          Line 48: statement list: (
+                            Line 48: statement: (
+                              Line 48: write statement: (
+                                Line 48: empty: ()
+                              )
+                            )
+                            Line 49: empty: ()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+          Line -1: empty: ()
+        )
+      )
+    )
+  )
+)
+test/testFiles/P1.bpl
+Line 1: program: (
+  Line 1: declaration list: (
+    Line 1: declaration: (
+      Line 1: function_dec: (
+        type: void
+        id: main
+        Line 1: params: (
+          Line 1: void: ()
+        )
+        Line 2: compound statement: (
+          Line 2: local decs: (
+            Line 2: var_dec: (
+              type: int
+              Line 2: empty: ()
+              id: x
+              Line 2: empty: ()
+            )
+            Line 3: local decs: (
+              Line 3: var_dec: (
+                type: string
+                Line 3: empty: ()
+                id: y
+                Line 3: empty: ()
+              )
+              Line 4: empty: ()
+            )
+          )
+          Line 4: statement list: (
+            Line 4: statement: (
+              Line 4: expression statement: (
+                Line 4: expression: (
+                  Line 4: assignment: (
+                    Line 4: var: (
+                      Line 4: empty: ()
+                      id: y
+                      Line 4: empty: ()
+                    )
+                    Line 4: expression: (
+                      Line 4: comp exp: (
+                        Line 4: E: (
+                          Line 4: empty: ()
+                          Line 4: empty: ()
+                          Line 4: T: (
+                            Line 4: empty: ()
+                            Line 4: empty: ()
+                            Line 4: F: (
+                              Line 4: empty: ()
+                              Line 4: factor: (
+                                id: "bob"
+                              )
+                            )
+                          )
+                        )
+                        Line 4: empty: ()
+                        Line 4: empty: ()
+                      )
+                    )
+                  )
+                )
+              )
+            )
+            Line 5: statement list: (
+              Line 5: statement: (
+                Line 5: expression statement: (
+                  Line 5: expression: (
+                    Line 5: assignment: (
+                      Line 5: var: (
+                        Line 5: empty: ()
+                        id: x
+                        Line 5: empty: ()
+                      )
+                      Line 5: expression: (
+                        Line 5: comp exp: (
+                          Line 5: E: (
+                            Line 5: empty: ()
+                            Line 5: empty: ()
+                            Line 5: T: (
+                              Line 5: empty: ()
+                              Line 5: empty: ()
+                              Line 5: F: (
+                                Line 5: empty: ()
+                                Line 5: factor: (
+                                  id: 1
+                                )
+                              )
+                            )
+                          )
+                          Line 5: empty: ()
+                          Line 5: empty: ()
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+              Line 6: statement list: (
+                Line 6: statement: (
+                  Line 6: expression statement: (
+                    Line 6: expression: (
+                      Line 6: assignment: (
+                        Line 6: var: (
+                          Line 6: empty: ()
+                          id: x
+                          Line 6: empty: ()
+                        )
+                        Line 6: expression: (
+                          Line 6: comp exp: (
+                            Line 6: E: (
+                              Line 6: E: (
+                                Line 6: empty: ()
+                                Line 6: empty: ()
+                                Line 6: T: (
+                                  Line 6: T: (
+                                    Line 6: empty: ()
+                                    Line 6: empty: ()
+                                    Line 6: F: (
+                                      Line 6: empty: ()
+                                      Line 6: factor: (
+                                        id: 3
+                                      )
+                                    )
+                                  )
+                                  op: *
+                                  Line 6: T: (
+                                    Line 6: empty: ()
+                                    Line 6: empty: ()
+                                    Line 6: F: (
+                                      Line 6: empty: ()
+                                      Line 6: factor: (
+                                        id: x
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                              op: +
+                              Line 6: T: (
+                                Line 6: empty: ()
+                                Line 6: empty: ()
+                                Line 6: F: (
+                                  Line 6: empty: ()
+                                  Line 6: factor: (
+                                    id: 5
+                                  )
+                                )
+                              )
+                            )
+                            Line 6: empty: ()
+                            Line 6: empty: ()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 7: statement list: (
+                  Line 7: statement: (
+                    Line 7: write statement: (
+                      Line 7: expression: (
+                        Line 7: comp exp: (
+                          Line 7: E: (
+                            Line 7: empty: ()
+                            Line 7: empty: ()
+                            Line 7: T: (
+                              Line 7: empty: ()
+                              Line 7: empty: ()
+                              Line 7: F: (
+                                Line 7: empty: ()
+                                Line 7: factor: (
+                                  id: x
+                                )
+                              )
+                            )
+                          )
+                          Line 7: empty: ()
+                          Line 7: empty: ()
+                        )
+                      )
+                    )
+                  )
+                  Line 8: empty: ()
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    Line -1: empty: ()
+  )
+)
+test/testFiles/P2.bpl
+Line 1: program: (
+  Line 1: declaration list: (
+    Line 1: declaration: (
+      Line 1: function_dec: (
+        type: void
+        id: main
+        Line 1: params: (
+          Line 1: void: ()
+        )
+        Line 2: compound statement: (
+          Line 2: local decs: (
+            Line 2: empty: ()
+            Line 2: empty: ()
+          )
+          Line 2: statement list: (
+            Line 2: statement: (
+              Line 2: if statement: (
+                Line 2: expression: (
+                  Line 2: comp exp: (
+                    Line 2: E: (
+                      Line 2: empty: ()
+                      Line 2: empty: ()
+                      Line 2: T: (
+                        Line 2: empty: ()
+                        Line 2: empty: ()
+                        Line 2: F: (
+                          Line 2: empty: ()
+                          Line 2: factor: (
+                            id: x
+                          )
+                        )
+                      )
+                    )
+                    op: <
+                    Line 2: E: (
+                      Line 2: empty: ()
+                      Line 2: empty: ()
+                      Line 2: T: (
+                        Line 2: empty: ()
+                        Line 2: empty: ()
+                        Line 2: F: (
+                          Line 2: empty: ()
+                          Line 2: factor: (
+                            id: 5
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 3: statement: (
+                  Line 3: expression statement: (
+                    Line 3: expression: (
+                      Line 3: comp exp: (
+                        Line 3: E: (
+                          Line 3: empty: ()
+                          Line 3: empty: ()
+                          Line 3: T: (
+                            Line 3: empty: ()
+                            Line 3: empty: ()
+                            Line 3: F: (
+                              Line 3: empty: ()
+                              Line 3: factor: (
+                                id: 1
+                              )
+                            )
+                          )
+                        )
+                        Line 3: empty: ()
+                        Line 3: empty: ()
+                      )
+                    )
+                  )
+                )
+                Line 5: else statement: (
+                  Line 5: statement: (
+                    Line 5: expression statement: (
+                      Line 5: expression: (
+                        Line 5: comp exp: (
+                          Line 5: E: (
+                            Line 5: empty: ()
+                            Line 5: empty: ()
+                            Line 5: T: (
+                              Line 5: empty: ()
+                              Line 5: empty: ()
+                              Line 5: F: (
+                                Line 5: empty: ()
+                                Line 5: factor: (
+                                  id: 2
+                                )
+                              )
+                            )
+                          )
+                          Line 5: empty: ()
+                          Line 5: empty: ()
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+            Line 6: empty: ()
+          )
+        )
+      )
+    )
+    Line -1: empty: ()
+  )
+)
+test/testFiles/P3B.bpl
+Line 1: program: (
+  Line 1: declaration list: (
+    Line 1: declaration: (
+      Line 1: function_dec: (
+        type: void
+        id: main
+        Line 1: params: (
+          Line 1: void: ()
+        )
+        Line 2: compound statement: (
+          Line 2: local decs: (
+            Line 2: empty: ()
+            Line 2: empty: ()
+          )
+          Line 2: statement list: (
+            Line 2: statement: (
+              Line 2: if statement: (
+                Line 2: expression: (
+                  Line 2: comp exp: (
+                    Line 2: E: (
+                      Line 2: empty: ()
+                      Line 2: empty: ()
+                      Line 2: T: (
+                        Line 2: empty: ()
+                        Line 2: empty: ()
+                        Line 2: F: (
+                          Line 2: empty: ()
+                          Line 2: factor: (
+                            id: x
+                          )
+                        )
+                      )
+                    )
+                    op: <
+                    Line 2: E: (
+                      Line 2: empty: ()
+                      Line 2: empty: ()
+                      Line 2: T: (
+                        Line 2: empty: ()
+                        Line 2: empty: ()
+                        Line 2: F: (
+                          Line 2: empty: ()
+                          Line 2: factor: (
+                            id: 5
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 2: statement: (
+                  Line 3: compound statement: (
+                    Line 3: local decs: (
+                      Line 3: empty: ()
+                      Line 3: empty: ()
+                    )
+                    Line 3: statement list: (
+                      Line 3: statement: (
+                        Line 3: if statement: (
+                          Line 3: expression: (
+                            Line 3: comp exp: (
+                              Line 3: E: (
+                                Line 3: empty: ()
+                                Line 3: empty: ()
+                                Line 3: T: (
+                                  Line 3: empty: ()
+                                  Line 3: empty: ()
+                                  Line 3: F: (
+                                    Line 3: empty: ()
+                                    Line 3: factor: (
+                                      id: y
+                                    )
+                                  )
+                                )
+                              )
+                              op: <
+                              Line 3: E: (
+                                Line 3: empty: ()
+                                Line 3: empty: ()
+                                Line 3: T: (
+                                  Line 3: empty: ()
+                                  Line 3: empty: ()
+                                  Line 3: F: (
+                                    Line 3: empty: ()
+                                    Line 3: factor: (
+                                      id: x
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                          Line 4: statement: (
+                            Line 4: expression statement: (
+                              Line 4: expression: (
+                                Line 4: comp exp: (
+                                  Line 4: E: (
+                                    Line 4: empty: ()
+                                    Line 4: empty: ()
+                                    Line 4: T: (
+                                      Line 4: empty: ()
+                                      Line 4: empty: ()
+                                      Line 4: F: (
+                                        Line 4: empty: ()
+                                        Line 4: factor: (
+                                          id: 1
+                                        )
+                                      )
+                                    )
+                                  )
+                                  Line 4: empty: ()
+                                  Line 4: empty: ()
+                                )
+                              )
+                            )
+                          )
+                          Line 5: empty: ()
+                        )
+                      )
+                      Line 5: empty: ()
+                    )
+                  )
+                )
+                Line 7: else statement: (
+                  Line 7: statement: (
+                    Line 7: expression statement: (
+                      Line 7: expression: (
+                        Line 7: comp exp: (
+                          Line 7: E: (
+                            Line 7: empty: ()
+                            Line 7: empty: ()
+                            Line 7: T: (
+                              Line 7: empty: ()
+                              Line 7: empty: ()
+                              Line 7: F: (
+                                Line 7: empty: ()
+                                Line 7: factor: (
+                                  id: 2
+                                )
+                              )
+                            )
+                          )
+                          Line 7: empty: ()
+                          Line 7: empty: ()
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+            Line 8: empty: ()
+          )
+        )
+      )
+    )
+    Line -1: empty: ()
+  )
+)
+test/testFiles/P3.bpl
+invalid type on line 1: )
+test/testFiles/P4.bpl
+Line 1: program: (
+  Line 1: declaration list: (
+    Line 1: declaration: (
+      Line 1: function_dec: (
+        type: void
+        id: main
+        Line 1: params: (
+          Line 1: void: ()
+        )
+        Line 2: compound statement: (
+          Line 2: local decs: (
+            Line 2: empty: ()
+            Line 2: empty: ()
+          )
+          Line 2: statement list: (
+            Line 2: statement: (
+              Line 2: expression statement: (
+                Line 2: expression: (
+                  Line 2: assignment: (
+                    Line 2: var: (
+                      Line 2: empty: ()
+                      id: x
+                      Line 2: empty: ()
+                    )
+                    Line 2: expression: (
+                      Line 2: comp exp: (
+                        Line 2: E: (
+                          Line 2: empty: ()
+                          Line 2: empty: ()
+                          Line 2: T: (
+                            Line 2: empty: ()
+                            Line 2: empty: ()
+                            Line 2: F: (
+                              Line 2: empty: ()
+                              Line 2: factor: (
+                                Line 2: fun call: (
+                                  id: f
+                                  Line 2: args: (
+                                    Line 2: arg list: (
+                                      Line 2: expression: (
+                                        Line 2: comp exp: (
+                                          Line 2: E: (
+                                            Line 2: empty: ()
+                                            Line 2: empty: ()
+                                            Line 2: T: (
+                                              Line 2: empty: ()
+                                              Line 2: empty: ()
+                                              Line 2: F: (
+                                                Line 2: empty: ()
+                                                Line 2: factor: (
+                                                  id: 3
+                                                )
+                                              )
+                                            )
+                                          )
+                                          Line 2: empty: ()
+                                          Line 2: empty: ()
+                                        )
+                                      )
+                                      Line 2: empty: ()
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                        Line 2: empty: ()
+                        Line 2: empty: ()
+                      )
+                    )
+                  )
+                )
+              )
+            )
+            Line 3: empty: ()
+          )
+        )
+      )
+    )
+    Line -1: empty: ()
+  )
+)
+test/testFiles/P5.bpl
+Line 1: program: (
+  Line 1: declaration list: (
+    Line 1: declaration: (
+      Line 1: function_dec: (
+        type: int
+        id: f
+        Line 1: params: (
+          Line 1: param list: (
+            Line 1: param: (
+              type: int
+              Line 1: empty: ()
+              id: x
+              Line 1: empty: ()
+            )
+            Line 1: empty: ()
+          )
+        )
+        Line 2: compound statement: (
+          Line 2: local decs: (
+            Line 2: empty: ()
+            Line 2: empty: ()
+          )
+          Line 2: statement list: (
+            Line 2: statement: (
+              Line 2: return statement: (
+                Line 2: expression: (
+                  Line 2: comp exp: (
+                    Line 2: E: (
+                      Line 2: empty: ()
+                      Line 2: empty: ()
+                      Line 2: T: (
+                        Line 2: empty: ()
+                        Line 2: empty: ()
+                        Line 2: F: (
+                          Line 2: empty: ()
+                          Line 2: factor: (
+                            id: x
+                          )
+                        )
+                      )
+                    )
+                    Line 2: empty: ()
+                    Line 2: empty: ()
+                  )
+                )
+              )
+            )
+            Line 3: empty: ()
+          )
+        )
+      )
+    )
+    Line 5: declaration list: (
+      Line 5: declaration: (
+        Line 5: function_dec: (
+          type: int
+          id: g
+          Line 5: params: (
+            Line 5: param list: (
+              Line 5: param: (
+                type: int
+                Line 5: empty: ()
+                id: x
+                Line 5: empty: ()
+              )
+              Line 5: param list: (
+                Line 5: param: (
+                  type: string
+                  Line 5: empty: ()
+                  id: y
+                  Line 5: empty: ()
+                )
+                Line 5: empty: ()
+              )
+            )
+          )
+          Line 6: compound statement: (
+            Line 6: local decs: (
+              Line 6: empty: ()
+              Line 6: empty: ()
+            )
+            Line 6: statement list: (
+              Line 6: statement: (
+                Line 6: write statement: (
+                  Line 6: expression: (
+                    Line 6: comp exp: (
+                      Line 6: E: (
+                        Line 6: empty: ()
+                        Line 6: empty: ()
+                        Line 6: T: (
+                          Line 6: empty: ()
+                          Line 6: empty: ()
+                          Line 6: F: (
+                            Line 6: empty: ()
+                            Line 6: factor: (
+                              id: x
+                            )
+                          )
+                        )
+                      )
+                      Line 6: empty: ()
+                      Line 6: empty: ()
+                    )
+                  )
+                )
+              )
+              Line 8: empty: ()
+            )
+          )
+        )
+      )
+      Line 10: declaration list: (
+        Line 10: declaration: (
+          Line 10: function_dec: (
+            type: void
+            id: main
+            Line 10: params: (
+              Line 10: void: ()
+            )
+            Line 11: compound statement: (
+              Line 11: local decs: (
+                Line 11: empty: ()
+                Line 11: empty: ()
+              )
+              Line 11: statement list: (
+                Line 11: statement: (
+                  Line 11: expression statement: (
+                    Line 11: expression: (
+                      Line 11: assignment: (
+                        Line 11: var: (
+                          Line 11: empty: ()
+                          id: x
+                          Line 11: empty: ()
+                        )
+                        Line 11: expression: (
+                          Line 11: comp exp: (
+                            Line 11: E: (
+                              Line 11: empty: ()
+                              Line 11: empty: ()
+                              Line 11: T: (
+                                Line 11: empty: ()
+                                Line 11: empty: ()
+                                Line 11: F: (
+                                  Line 11: empty: ()
+                                  Line 11: factor: (
+                                    Line 11: fun call: (
+                                      id: f
+                                      Line 11: args: (
+                                        Line 11: arg list: (
+                                          Line 11: expression: (
+                                            Line 11: comp exp: (
+                                              Line 11: E: (
+                                                Line 11: empty: ()
+                                                Line 11: empty: ()
+                                                Line 11: T: (
+                                                  Line 11: empty: ()
+                                                  Line 11: empty: ()
+                                                  Line 11: F: (
+                                                    Line 11: empty: ()
+                                                    Line 11: factor: (
+                                                      id: 3
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              Line 11: empty: ()
+                                              Line 11: empty: ()
+                                            )
+                                          )
+                                          Line 11: empty: ()
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                            Line 11: empty: ()
+                            Line 11: empty: ()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+                Line 12: empty: ()
+              )
+            )
+          )
+        )
+        Line -1: empty: ()
+      )
+    )
+  )
+)
+test/testFiles/P6.bpl
+Line 2: program: (
+  Line 2: declaration list: (
+    Line 2: declaration: (
+      Line 2: var_dec: (
+        type: int
+        Line 2: empty: ()
+        id: A
+        Line 2: []: (
+          id: 100
+        )
+      )
+    )
+    Line 4: declaration list: (
+      Line 4: declaration: (
+        Line 4: function_dec: (
+          type: void
+          id: main
+          Line 4: params: (
+            Line 4: void: ()
+          )
+          Line 5: compound statement: (
+            Line 5: local decs: (
+              Line 5: empty: ()
+              Line 5: empty: ()
+            )
+            Line 5: statement list: (
+              Line 5: statement: (
+                Line 5: write statement: (
+                  Line 5: expression: (
+                    Line 5: comp exp: (
+                      Line 5: E: (
+                        Line 5: empty: ()
+                        Line 5: empty: ()
+                        Line 5: T: (
+                          Line 5: empty: ()
+                          Line 5: empty: ()
+                          Line 5: F: (
+                            Line 5: empty: ()
+                            Line 5: factor: (
+                              Line 5: array index: (
+                                id: A
+                                Line 5: expression: (
+                                  Line 5: comp exp: (
+                                    Line 5: E: (
+                                      Line 5: empty: ()
+                                      Line 5: empty: ()
+                                      Line 5: T: (
+                                        Line 5: empty: ()
+                                        Line 5: empty: ()
+                                        Line 5: F: (
+                                          Line 5: empty: ()
+                                          Line 5: factor: (
+                                            id: 0
+                                          )
+                                        )
+                                      )
+                                    )
+                                    Line 5: empty: ()
+                                    Line 5: empty: ()
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                      Line 5: empty: ()
+                      Line 5: empty: ()
+                    )
+                  )
+                )
+              )
+              Line 6: empty: ()
+            )
+          )
+        )
+      )
+      Line -1: empty: ()
+    )
+  )
+)
+test/testFiles/P7.bpl
+syntax error: line 5 : expected identifier ; got token 1
+test/testFiles/P8.bpl
+syntax error: line 2 : expected ) ; got token {
+test/testFiles/P9.bpl
+no next token

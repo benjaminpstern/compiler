@@ -23,7 +23,7 @@ token tokenizer::next_token() {
     if (line_tokens_.has_next_token()) {
         return identify_token(line_tokens_.next_token_str(), line_num_);
     }
-    throw std::out_of_range("no next token");
+    throw std::range_error("no next token");
 }
 
 token tokenizer::peek_token() {
@@ -41,7 +41,7 @@ token tokenizer::peek_token() {
         token_queue_.push_back(t);
         return t;
     }
-    throw std::out_of_range("no next token");
+    throw std::range_error("no next token");
 }
 
 void tokenizer::unget_token(token t) {
