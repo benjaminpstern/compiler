@@ -23,7 +23,7 @@ class parse_tree_node {
         virtual void add_to_stream(std::stringstream& s) = 0;
         virtual void to_indented_str(std::stringstream& s, int depth) = 0;
         void set_child(int num, parse_tree_node* child);
-        void set_declaration();
+        void set_declaration(parse_tree_node* p);
         parse_tree_node* get_declaration();
         virtual ~parse_tree_node();
     protected:

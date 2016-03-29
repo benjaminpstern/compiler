@@ -25,6 +25,11 @@ parse_tree_node::parse_tree_node(string type, int num_children, int line_num) {
     init(type, num_children, line_num);
 }
 
+
+void parse_tree_node::set_declaration(parse_tree_node* p) {
+    declaration_ = p;
+}
+
 void parse_tree_node::init(string type, int num_children, int line_num) {
     type_ = type;
     num_children_ = num_children;
