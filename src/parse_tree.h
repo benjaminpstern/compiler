@@ -25,6 +25,7 @@ class parse_tree_node {
         void set_child(int num, parse_tree_node* child);
         void set_declaration(parse_tree_node* p);
         parse_tree_node* get_declaration();
+        int get_line_num();
         virtual ~parse_tree_node();
     protected:
         parse_tree_node** children_;
@@ -49,6 +50,7 @@ class id_node : public terminal_node {
         id_node(string value, int line_num);
         id_node(string value);
         string to_str();
+        string get_value();
     private:
         string value_;
 };
@@ -58,14 +60,16 @@ class type_node : public terminal_node {
         type_node(string type, int line_num);
         type_node(string type);
         string to_str();
+        string get_value();
     private:
-        string type_;
+        string value_;
 };
 
 class op_node : public terminal_node {
     public:
         op_node(string op, int line_num);
         op_node(string op);
+        string get_op();
         string to_str();
     private:
         string op_;

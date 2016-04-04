@@ -17,6 +17,22 @@ parse_tree_node::parse_tree_node(string type, int num_children) {
     init(type, num_children, 0);
 }
 
+string parse_tree_node::get_type() {
+    return type_;
+}
+
+int parse_tree_node::get_line_num() {
+    return line_num_;
+}
+
+int parse_tree_node::get_num_children() {
+    return num_children_;
+}
+
+parse_tree_node* parse_tree_node::get_declaration() {
+    return declaration_;
+}
+
 parse_tree_node* parse_tree_node::get_child_n(int n) {
     return children_[n];
 }
@@ -126,13 +142,17 @@ string id_node::to_str() {
     return return_str;
 }
 
+string id_node::get_value() {
+    return value_;
+}
+
 int_node::int_node(int value, int line_num) : terminal_node() {
-    init("id", 0, line_num);
+    init("int", 0, line_num);
     value_ = value;
 }
 
 int_node::int_node(int value) : terminal_node() {
-    init("id", 0, 0);
+    init("int", 0, 0);
     value_ = value;
 }
 
@@ -144,12 +164,12 @@ string int_node::to_str() {
 }
 
 float_node::float_node(float value, int line_num) : terminal_node() {
-    init("id", 0, line_num);
+    init("float", 0, line_num);
     value_ = value;
 }
 
 float_node::float_node(float value) : terminal_node() {
-    init("id", 0, 0);
+    init("float", 0, 0);
     value_ = value;
 }
 
@@ -161,12 +181,12 @@ string float_node::to_str() {
 }
 
 string_node::string_node(string value, int line_num) : terminal_node() {
-    init("id", 0, line_num);
+    init("string", 0, line_num);
     value_ = value;
 }
 
 string_node::string_node(string value) : terminal_node() {
-    init("id", 0, 0);
+    init("string", 0, 0);
     value_ = value;
 }
 
@@ -187,16 +207,20 @@ internal_node::internal_node(string type, int num_children, int line_num) : pars
 
 type_node::type_node(string type) : terminal_node() {
     init("type", 0, 0);
-    type_ = type;
+    value_ = type;
 }
 
 type_node::type_node(string type, int line_num) : terminal_node() {
     init("type", 0, line_num);
-    type_ = type;
+    value_ = type;
 }
 
 string type_node::to_str() {
     return "type: " + type_;
+}
+
+string type_node::get_value() {
+    return value_;
 }
 
 string terminal_node::to_indented_str() {
@@ -222,6 +246,10 @@ op_node::op_node(string op) : terminal_node() {
 op_node::op_node(string op, int line_num) : terminal_node() {
     init("op", 0, line_num);
     op_ = op;
+}
+
+string op_node::get_op() {
+    return op_;
 }
 
 string op_node::to_str() {

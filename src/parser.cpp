@@ -190,6 +190,10 @@ parse_tree_node* parser::params() {
         internal_node* v = new internal_node("void", 0, cur_line_num());
         p->set_child(0, v);
     }
+    else if (tokens_.peek_token().get_str() == ")") {
+        internal_node* v = new internal_node("void", 0, cur_line_num());
+        p->set_child(0, v);
+    }
     else {
         p->set_child(0, param_list());
     }
@@ -449,7 +453,7 @@ parse_tree_node* parser::T() {
         internal_node* e1 = new internal_node("T", 3, cur_line_num());
         e1->set_child(0, e);
         e1->set_child(1, mulop);
-        e1->set_child(2, T());
+        e1->set_child(2, F());
         e = e1;
     }
     return e;
@@ -478,7 +482,7 @@ parse_tree_node* parser::F() {
     return p;
 }
 
-parse_tree_node* parser::factor() { 
+parse_tree_node* parser::factor() {
     internal_node* p = new internal_node("factor", 1, cur_line_num());
     if (tokens_.peek_token().get_type() == "(") {
         p->set_child(0, paren_exp());

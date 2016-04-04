@@ -18,6 +18,10 @@
 #include <stdexcept>
 #endif
 
+#ifndef TYPE_CHECKER
+#include "type_checker.h"
+#endif
+
 using std::cout;
 using std::endl;
 using std::setw;
@@ -30,7 +34,7 @@ int main(int argc, char** argv) {
     parser p(t);
     try {
         internal_node* node = p.parse();
-        cout << node->to_indented_str() << endl;
+        type_check(node);
         delete node;
     }
     catch (std::range_error& e) {
