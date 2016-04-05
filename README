@@ -1,14 +1,8 @@
 Benjamin Stern
 I have adhered to the honor code
-This is my parser for BPL
+This is my type checker for BPL
 It's written in C++. Source files are in the src directory.
-Relevant files to the scanner are
-
-parser.cpp
-parser.h
-parse_tree.cpp
-parse_tree.h
 
 To build the files, type "make"
-To run the scanner, type "./bpl filename"
+To run the type checker, type "./bpl filename"
 I have provided some test programs to test with in test/testFiles
