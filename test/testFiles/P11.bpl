@@ -8,12 +8,12 @@ int fact( int n) {
 
 void main(void) {
 	int x;
-	x = 1;
-	while (x < 10) {
+    int y;
+	x = 0;
+	while ((x=x+1) < 10) {
 		write(x);
 		write(fact(x));
 		writeln();
-		x = x + 1;
 	}
 }
 

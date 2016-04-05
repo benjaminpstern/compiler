@@ -19,6 +19,13 @@ void top_down_pass(parse_tree_node* p) {
 
 void add_var_to_symbol_table(parse_tree_node* p,
         map<string, parse_tree_node*>& symbol_table) {
+    type_node* t = (type_node*)p->get_child_n(0);
+    if (t->get_value() == "void") {
+        stringstream msg;
+        msg << "Error: can't declare variable of type 'void': line "
+            << p->get_line_num();
+        throw std::range_error(msg.str());
+    }
     id_node* n = (id_node*)p->get_child_n(2);
     string id = n->get_value();
     symbol_table[id] = p;
@@ -35,6 +42,12 @@ void add_function_to_symbol_table(parse_tree_node* p,
         map<string, parse_tree_node*>& symbol_table) {
     id_node* n = (id_node*)p->get_child_n(1);
     string id = n->get_value();
+    if (symbol_table[id] != NULL) {
+        stringstream msg;
+        msg << "Error: " << id << " is already defined : line "
+            << p->get_line_num();
+        throw std::range_error(msg.str());
+    }
     symbol_table[id] = p;
     if (DEBUG) {
         std::cout << "Found declaration of function "
@@ -61,7 +74,7 @@ string get_type_of_var(parse_tree_node* p) {
     parse_tree_node* child1 = p->get_child_n(1);
     string type = get_type_of_var_dec(child1->get_declaration());
     if (p->get_child_n(0)->get_type() != "empty") {
-        type = type.substr(1); // remove *
+        type = type.substr(0, type.length() - 1); // remove *
     }
     if (p->get_child_n(2)->get_type() != "empty") {
         type = type.substr(0, type.length() - 2);
@@ -137,6 +150,29 @@ string check_type(parse_tree_node* p) {
     }
     else if (type == "fun call") {
         return type_check_function_call(p);
+    }
+    else if (type == "function_dec") {
+        type_node* return_type = (type_node*)p->get_child_n(0);
+        check_return_statements(p, return_type->get_value());
+        for (int i = 0; i < p->get_num_children(); i++) {
+            check_type(p->get_child_n(i));
+        }
+    }
+    else if (type == "write statement") {
+        if (p->get_child_n(0)->get_type() != "empty") {
+            parse_tree_node* exp = p->get_child_n(0);
+            string exp_type = type_check_expression(exp);
+            if (exp_type != "int" && exp_type != "float" && exp_type != "string") {
+                stringstream msg;
+                msg << "Error: write statement must take a string, int, or float :"
+                    << " line " << p->get_line_num() << std::endl;
+                throw std::range_error(msg.str());
+            }
+            else {
+                std::cout << "Verified that write statement on line "
+                    << p->get_line_num() << " takes " << exp_type << std::endl;
+            }
+        }
     }
     else {
         for (int i = 0; i < p->get_num_children(); i++) {
@@ -294,6 +330,7 @@ string type_check_F(parse_tree_node* p) {
             msg << std::endl;
             throw std::range_error(msg.str());
         }
+        return type.substr(0, type.length() - 1);
     }
     else if (operation == "&") {
         string type = type_check_factor(p->get_child_n(1));
@@ -307,6 +344,7 @@ string type_check_F(parse_tree_node* p) {
             msg << std::endl;
             throw std::range_error(msg.str());
         }
+        return type + "*";
     }
     return "int";
 }
@@ -357,8 +395,118 @@ string type_check_array_index(parse_tree_node* p) {
     return new_type;
 }
 
+void check_return_statements(parse_tree_node* p, string expected_type) {
+    if (p->get_type() == "return statement") {
+        parse_tree_node* child = p->get_child_n(0);
+        if (child->get_type() != "empty") {
+            string returned_type = type_check_expression(child);
+            assert_type(expected_type, returned_type, p->get_line_num());
+            if (DEBUG) {
+                std::cout << "Verified that return statement on line "
+                    << p->get_line_num()
+                    << " returns object of type "
+                    << expected_type
+                    << std::endl;
+            }
+        }
+        else {
+            if (expected_type != "void") {
+                stringstream msg;
+                msg << "Error: returned nothing from non-void function : line "
+                    << p->get_line_num()
+                    << std::endl;
+                throw std::range_error(msg.str());
+            }
+            if (DEBUG) {
+                std::cout << "Verified that return statement on line "
+                    << p->get_line_num()
+                    << " returns nothing"
+                    << std::endl;
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < p->get_num_children(); i++) {
+            check_return_statements(p->get_child_n(i), expected_type);
+        }
+    }
+}
+void check_params(parse_tree_node* arg_list, parse_tree_node* param_list) {
+    parse_tree_node* exp = arg_list->get_child_n(0);
+    parse_tree_node* param = param_list->get_child_n(0);
+    string expected_type = get_type_of_var_dec(param);
+    assert_type(expected_type, type_check_expression(exp), arg_list->get_line_num());
+    parse_tree_node* param_child = param_list->get_child_n(1);
+    parse_tree_node* arg_child = arg_list->get_child_n(1);
+    if (param_child->get_type() != "empty") {
+        if (arg_child->get_type() != "empty") {
+            check_params(arg_child, param_child);
+        }
+        else {
+            stringstream msg;
+            msg << "Error: too few arguments in function call on line "
+                << arg_list->get_line_num();
+            throw std::range_error(msg.str());
+        }
+    }
+    else {
+        if (arg_child->get_type() != "empty") {
+            stringstream msg;
+            msg << "Error: too many arguments in function call on line "
+                << arg_list->get_line_num();
+            throw std::range_error(msg.str());
+        }
+    }
+}
 string type_check_function_call(parse_tree_node* p) {
-    return "int";
+    parse_tree_node* id = p->get_child_n(0);
+    type_node* t = (type_node*)(id->get_declaration()->get_child_n(0));
+    string return_type = t->get_value();
+    parse_tree_node* declaration = id->get_declaration();
+    parse_tree_node* dec_params = declaration->get_child_n(2);
+    parse_tree_node* dec_child = dec_params->get_child_n(0);
+    parse_tree_node* args = p->get_child_n(1);
+    parse_tree_node* arg_child = args->get_child_n(0);
+    if (dec_child->get_type() == "void") {
+        if (arg_child->get_type() == "empty") {
+            if (DEBUG) {
+                std::cout << "Verified that function "
+                    << ((id_node*)(id))->get_value()
+                    << " on line "
+                    << p->get_line_num()
+                    << " takes no arguments"
+                    << std::endl;
+            }
+        }
+        else {
+            stringstream msg;
+            msg << "Error: function "
+                << ((id_node*)id)->get_value()
+                << " takes no arguments : line "
+                << p->get_line_num();
+            throw std::range_error(msg.str());
+        }
+    }
+    else {
+        if (arg_child->get_type() == "empty") {
+            stringstream msg;
+            msg << "Error: function "
+                << ((id_node*)id)->get_value()
+                << " missing arguments : line "
+                << p->get_line_num();
+            throw std::range_error(msg.str());
+        }
+        check_params(arg_child, dec_child);
+        if (DEBUG) {
+            std::cout << "Verified that function "
+                << ((id_node*)(id))->get_value()
+                << " on line "
+                << p->get_line_num()
+                << " called with correct arguments"
+                << std::endl;
+        }
+    }
+    return return_type;
 }
 
 string type_check_assignment(parse_tree_node* p) {

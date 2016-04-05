@@ -28,4 +28,5 @@ void top_down_pass(parse_tree_node* p,
 void clone(map<string, parse_tree_node*>& dest,
         map<string, parse_tree_node*>& source);
 void assert_type(string expected, string actual, int line_num);
+void check_return_statements(parse_tree_node* p, string expected_type);
 #endif
