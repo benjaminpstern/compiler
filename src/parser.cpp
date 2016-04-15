@@ -145,7 +145,6 @@ parse_tree_node* parser::return_statement() {
     internal_node* p = new internal_node("return statement", 1, cur_line_num());
     expect_keyword("return");
     if (tokens_.peek_token().get_type() == ";") {
-        expect_token_type(";");
         p->set_child(0, empty_node());
     }
     else {
