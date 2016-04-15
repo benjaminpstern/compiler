@@ -5,7 +5,7 @@
 #ifndef IOSTREAM
 #include <iostream>
 #endif
-bool DEBUG = true;
+bool DEBUG = false;
 
 void type_check(parse_tree_node* p) {
     top_down_pass(p);
@@ -93,7 +93,7 @@ void top_down_pass(parse_tree_node* p,
             std::stringstream message;
             message << "Error: no declaration for variable ";
             message << s;
-            message << " On line ";
+            message << " on line ";
             message << i->get_line_num();
             message << std::endl;
             throw std::range_error(message.str());
@@ -169,8 +169,10 @@ string check_type(parse_tree_node* p) {
                 throw std::range_error(msg.str());
             }
             else {
-                std::cout << "Verified that write statement on line "
-                    << p->get_line_num() << " takes " << exp_type << std::endl;
+                if (DEBUG) {
+                    std::cout << "Verified that write statement on line "
+                        << p->get_line_num() << " takes " << exp_type << std::endl;
+                }
             }
         }
     }
@@ -308,6 +310,48 @@ string type_check_T(parse_tree_node* p) {
     return "int";
 }
 
+bool is_lvalue(parse_tree_node* p) {
+    string type = p->get_type();
+    if (type == "expression") {
+        return is_lvalue(p->get_child_n(0));
+    }
+    else if (type == "comp exp") {
+        string childType = p->get_child_n(1)->get_type();
+        return childType == "empty" && is_lvalue(p->get_child_n(0));
+    }
+    else if (type == "E") {
+        string childType = p->get_child_n(1)->get_type();
+        return childType == "empty" && is_lvalue(p->get_child_n(2));
+    }
+    else if (type == "T") {
+        string childType = p->get_child_n(1)->get_type();
+        return childType == "empty" && is_lvalue(p->get_child_n(2));
+    }
+    else if (type == "F") {
+        string childType = p->get_child_n(0)->get_type();
+        if (childType == "*" || childType == "empty") {
+            return true;
+        }
+        return false;
+    }
+    else if (type == "factor") {
+        return is_lvalue(p->get_child_n(0));
+    }
+    else if (type == "paren_exp") {
+        return is_lvalue(p->get_child_n(0));
+    }
+    else if (type == "array_index") {
+        return true;
+    }
+    else if (type == "id") {
+        return true;
+    }
+    else if (type == "float" || type == "int"
+            || type == "string" || type == "read") {
+        return false;
+    }
+    return false;
+}
 string type_check_F(parse_tree_node* p) {
     parse_tree_node* first_child = p->get_child_n(0);
     if (first_child->get_type() == "empty") {
@@ -340,6 +384,14 @@ string type_check_F(parse_tree_node* p) {
             msg << "Error: cannot get address of expression of type ";
             msg << type;
             msg << " on line ";
+            msg << p->get_line_num();
+            msg << std::endl;
+            throw std::range_error(msg.str());
+        }
+        if (!is_lvalue(p->get_child_n(1))) {
+            std::stringstream msg;
+            msg << "Error: cannot get address of rvalue ";
+            msg << "on line ";
             msg << p->get_line_num();
             msg << std::endl;
             throw std::range_error(msg.str());

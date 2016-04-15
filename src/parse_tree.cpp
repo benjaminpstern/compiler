@@ -216,7 +216,7 @@ type_node::type_node(string type, int line_num) : terminal_node() {
 }
 
 string type_node::to_str() {
-    return "type: " + type_;
+    return "type: " + value_;
 }
 
 string type_node::get_value() {

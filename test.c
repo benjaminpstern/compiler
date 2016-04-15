@@ -1,8 +1,6 @@
 #include <stdio.h>
 int main() {
-    int i = 0;
-    for (int i = 0; i < 5; ++i) {
-        printf("%d\n", i);
-    }
-    printf("%d\n", i);
+    int x = 0;
+    int* y;
+    y = &(x);
 }
