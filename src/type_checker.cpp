@@ -5,7 +5,7 @@
 #ifndef IOSTREAM
 #include <iostream>
 #endif
-bool DEBUG = false;
+bool DEBUG = true;
 
 void type_check(parse_tree_node* p) {
     top_down_pass(p);
@@ -581,13 +581,18 @@ string type_check_assignment(parse_tree_node* p) {
 
 string type_check_expression(parse_tree_node* p) {
     parse_tree_node* child = p->get_child_n(0);
+    string type;
     if (child->get_type() == "assignment") {
-        return type_check_assignment(child);
+        type = type_check_assignment(child);
     }
     else if (child->get_type() == "comp exp") {
-        return type_check_comp_exp(child);
+        type = type_check_comp_exp(child);
     }
-    return "int";
+    else {
+        type = "int";
+    }
+    p->set_evaluated_type(type);
+    return type;
 }
 
 void assert_type(string expected, string actual, int line_num) {

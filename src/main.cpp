@@ -22,6 +22,10 @@
 #include "type_checker.h"
 #endif
 
+#ifndef CODE_GENERATOR
+#include "code_generator.h"
+#endif
+
 using std::cout;
 using std::endl;
 using std::setw;
@@ -35,6 +39,7 @@ int main(int argc, char** argv) {
     try {
         internal_node* node = p.parse();
         type_check(node);
+        // generate_code(node);
         delete node;
     }
     catch (std::range_error& e) {

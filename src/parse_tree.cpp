@@ -33,6 +33,30 @@ parse_tree_node* parse_tree_node::get_declaration() {
     return declaration_;
 }
 
+string parse_tree_node::get_evaluated_type() {
+    return evaluated_type_;
+}
+
+void parse_tree_node::set_evaluated_type(string type) {
+    evaluated_type_ = type;
+}
+
+int parse_tree_node::get_variable_depth() {
+    return variable_depth_;
+}
+
+int parse_tree_node::get_variable_pos() {
+    return variable_position_;
+}
+
+void parse_tree_node::set_variable_depth(int depth) {
+    variable_depth_ = depth;
+}
+
+void parse_tree_node::set_variable_pos(int pos) {
+    variable_position_ = pos;
+}
+
 parse_tree_node* parse_tree_node::get_child_n(int n) {
     return children_[n];
 }
@@ -188,6 +212,10 @@ string_node::string_node(string value, int line_num) : terminal_node() {
 string_node::string_node(string value) : terminal_node() {
     init("string", 0, 0);
     value_ = value;
+}
+
+string string_node::get_value() {
+    return value_;
 }
 
 string string_node::to_str() {

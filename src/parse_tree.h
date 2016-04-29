@@ -25,6 +25,12 @@ class parse_tree_node {
         void set_child(int num, parse_tree_node* child);
         void set_declaration(parse_tree_node* p);
         parse_tree_node* get_declaration();
+        string get_evaluated_type();
+        void set_evaluated_type(string type);
+        void set_variable_depth(int depth);
+        void set_variable_pos(int pos);
+        int get_variable_depth();
+        int get_variable_pos();
         int get_line_num();
         virtual ~parse_tree_node();
     protected:
@@ -34,6 +40,9 @@ class parse_tree_node {
         parse_tree_node* declaration_;
         void init(string type, int num_children, int line_num);
         string type_;
+        string evaluated_type_;
+        int variable_depth_;
+        int variable_position_;
 };
 
 class terminal_node : public parse_tree_node {
@@ -98,6 +107,7 @@ class string_node : public terminal_node {
         string_node(string value, int line_num);
         string_node(string value);
         string to_str();
+        string get_value();
     private:
         string value_;
 };
