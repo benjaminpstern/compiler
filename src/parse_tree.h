@@ -119,7 +119,5 @@ class internal_node : public parse_tree_node {
         string to_indented_str();
         void add_to_stream(std::stringstream& s);
         void to_indented_str(std::stringstream& s, int depth);
-    private:
-        int value_;
 };
 #endif

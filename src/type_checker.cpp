@@ -5,7 +5,7 @@
 #ifndef IOSTREAM
 #include <iostream>
 #endif
-bool DEBUG = true;
+bool DEBUG = false;
 
 void type_check(parse_tree_node* p) {
     top_down_pass(p);

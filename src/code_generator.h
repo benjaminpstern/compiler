@@ -25,11 +25,18 @@ typedef struct symbol_tables {
     map<string, string> string_table;
     symbol_tables(map<string, string> syms, map<string, string> strings);
 } symbol_tables;
-symbol_tables* generate_rodata(parse_tree_node* p);
+map<string, string> generate_rodata(parse_tree_node* p);
 void assign_variable_depth(parse_tree_node* p);
 void generate_code(parse_tree_node* p);
-void generate_function(parse_tree_node* p, symbol_tables* global_tables);
+void generate_function(parse_tree_node* p, map<string, string> string_table);
+void generate_functions(parse_tree_node* p, map<string, string> string_table);
 map<string, string> find_strings(parse_tree_node* p);
 int find_strings(parse_tree_node* p, map<string, string>& m, int n);
-map<string, string> get_global_variables(parse_tree_node* p);
+void get_global_variables(parse_tree_node* p);
+void generate_compound_statement(parse_tree_node* p,
+        map<string, string> string_table);
+void generate_statement(parse_tree_node* p,
+        map<string, string> string_table);
+void generate_statement_list(parse_tree_node* p,
+        map<string, string> string_table);
 #endif
