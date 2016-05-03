@@ -180,6 +180,10 @@ int_node::int_node(int value) : terminal_node() {
     value_ = value;
 }
 
+int int_node::get_value() {
+    return value_;
+}
+
 string int_node::to_str() {
     std::stringstream s(type_, std::ios_base::app | std::ios_base::out);
     s << ": ";

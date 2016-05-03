@@ -1,6 +1,13 @@
 #ifndef CODE_GENERATOR
 #include "code_generator.h"
 #endif
+string new_label() {
+    static int labelno = 0;
+    string label = "L" + std::to_string(labelno);
+    labelno++;
+    return label;
+}
+
 void generate_code(parse_tree_node* p) {
     assign_variable_depth(p);
     map<string, string> string_table = generate_rodata(p);
@@ -48,8 +55,148 @@ string get_string(parse_tree_node* p) {
     return ((string_node*)p)->get_value();
 }
 
-void generate_eval_exp(parse_tree_node* p) {
+void evaluate_int_assignment(parse_tree_node* p) {
+    cout << "movq $5, %rax" << endl;
 }
+
+void evaluate_int_factor(parse_tree_node* p) {
+    parse_tree_node* child = p->get_child_n(0);
+    if (child->get_type() == "paren_exp") {
+        parse_tree_node* child_child = child->get_child_n(0);
+        evaluate_int_expression(child_child);
+    }
+    else if (child->get_type() == "array index") {
+        // TODO
+    }
+    else if (child->get_type() == "fun call") {
+        // TODO
+    }
+    else if (child->get_type() == "identifier") {
+        // TODO
+    }
+    else if (child->get_type() == "int") {
+        int value = ((int_node*)child)->get_value();
+        cout << "movq $" << value << ", %rax" << endl;
+    }
+    else {
+    }
+}
+
+void evaluate_int_F(parse_tree_node* p) {
+    parse_tree_node* op = p->get_child_n(0);
+    parse_tree_node* child = p->get_child_n(1);
+    if (op->get_type() == "empty") {
+        evaluate_int_factor(child);
+    }
+    else {
+        string operation = ((op_node*)op)->get_op();
+        if (operation == "-") {
+            evaluate_int_F(child);
+            cout << "imul $-1, %eax" << endl;
+        }
+        else if (operation == "*") {
+            // TODO
+        }
+        else if (operation == "&") {
+            // TODO
+        }
+    }
+}
+
+void evaluate_int_T(parse_tree_node* p) {
+    parse_tree_node* left = p->get_child_n(0);
+    parse_tree_node* right = p->get_child_n(2);
+    evaluate_int_F(right);
+    if (left->get_type() != "empty") {
+        cout << "push %rax" << endl;
+        evaluate_int_T(left);
+        string op = ((op_node*)p->get_child_n(1))->get_op();
+        if (op == "*") {
+            cout << "imul 0(%rsp), %eax" << endl;
+        }
+        else {
+            cout << "movq 0(%rsp), %rbx" << endl;
+            cout << "cltq" << endl;
+            cout << "cqto" << endl;
+            cout << "idiv %ebx" << endl;
+            if (op == "%") {
+                cout << "movl %edx, %eax" << endl;
+            }
+        }
+        cout << "addq $8, %rsp" << endl;
+    }
+}
+
+void evaluate_int_E(parse_tree_node* p) {
+    parse_tree_node* left = p->get_child_n(0);
+    parse_tree_node* right = p->get_child_n(2);
+    evaluate_int_T(right);
+    if (left->get_type() != "empty") {
+        cout << "push %rax" << endl;
+        evaluate_int_E(left);
+        string op = ((op_node*)p->get_child_n(1))->get_op();
+        string addop;
+        if (op == "+") {
+            addop = "addq";
+        }
+        else {
+            addop = "subq";
+        }
+        cout << addop << " 0(%rsp), %rax" << endl;
+        cout << "addq $8, %rsp" << endl;
+    }
+}
+
+void evaluate_int_compexp(parse_tree_node* p) {
+    parse_tree_node* left = p->get_child_n(0);
+    parse_tree_node* right = p->get_child_n(2);
+    evaluate_int_E(left);
+    if (right->get_type() != "empty") {
+        string op = ((op_node*)p->get_child_n(1))->get_op();
+        cout << "push %rax" << endl;
+        evaluate_int_E(right);
+        cout << "cmp 0(%rsp), %eax" << endl;
+        string label1 = new_label();
+        string label2 = new_label();
+        string jump_op;
+        if (op == "==") {
+            jump_op = "jne";
+        }
+        else if(op == "<=") {
+            jump_op = "jg";
+        }
+        else if(op == ">=") {
+            jump_op = "jl";
+        }
+        else if(op == ">") {
+            jump_op = "jle";
+        }
+        else if(op == "<") {
+            jump_op = "jge";
+        }
+        else if(op == "!=") {
+            jump_op = "je";
+        }
+        cout << jump_op << " " << label1 << endl;
+        cout << "movq $1, %rax" << endl;
+        cout << "jmp " << label2 << endl;
+        cout << label1 << ":" << endl;
+        cout << "movq $0, %rax" << endl;
+        cout << label2 << ":" << endl;
+        cout << "addq $8, %rsp" << endl;
+    }
+}
+
+void evaluate_int_expression(parse_tree_node* p) {
+    string type = p->get_child_n(0)->get_type();
+    if (type == "assignment") {
+        evaluate_int_assignment(p->get_child_n(0));
+    }
+    else {
+        evaluate_int_compexp(p->get_child_n(0));
+    }
+}
+
 void generate_write(parse_tree_node* p, map<string, string> string_table) {
     parse_tree_node* print_this = p->get_child_n(0);
     string string_name;
@@ -58,12 +205,14 @@ void generate_write(parse_tree_node* p, map<string, string> string_table) {
     }
     else {
         if (print_this->get_evaluated_type() == "string") {
-            string_name = string_table[get_string(print_this)];
+            string_name = string_table["\"%s\""];
+            string print_string = string_table[get_string(print_this)];
+            cout << "movq $" << print_string << ", %rsi" << endl;
         }
         else if (print_this->get_evaluated_type() == "int") {
             string_name = string_table["\"%d\\n\""];
-            generate_eval_exp(print_this);
-            cout << "movq %rax, %rsi";
+            evaluate_int_expression(print_this);
+            cout << "movq %rax, %rsi" << endl;
         }
         else {
         }

@@ -89,6 +89,7 @@ class int_node : public terminal_node {
         int_node(int value, int line_num);
         int_node(int value);
         string to_str();
+        int get_value();
     private:
         int value_;
 };
