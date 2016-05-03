@@ -51,10 +51,12 @@ int parse_tree_node::get_variable_pos() {
 
 void parse_tree_node::set_variable_depth(int depth) {
     variable_depth_ = depth;
+    // std::cout << "setting depth of " << to_str() << " to " << depth << std::endl;
 }
 
 void parse_tree_node::set_variable_pos(int pos) {
     variable_position_ = pos;
+    // std::cout << "setting pos of " << to_str() << " to " << pos << std::endl;
 }
 
 parse_tree_node* parse_tree_node::get_child_n(int n) {

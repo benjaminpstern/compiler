@@ -22,6 +22,7 @@ void generate_function(parse_tree_node* p,
     id_node* id = (id_node*)p->get_child_n(1);
     string s = id->get_value();
     cout << s << ":" << endl;
+    cout << "movq %rsp, %rbx" << endl;
     generate_compound_statement(p->get_child_n(3), string_table);
 }
 
@@ -56,7 +57,10 @@ string get_string(parse_tree_node* p) {
 }
 
 void evaluate_int_assignment(parse_tree_node* p) {
-    cout << "movq $5, %rax" << endl;
+    parse_tree_node* exp = p->get_child_n(1);
+    parse_tree_node* id = p->get_child_n(0)->get_child_n(1);
+    evaluate_expression(exp);
+    cout << "movq %rax, " << var_placement(id) << endl;
 }
 
 int push_args(parse_tree_node* p) {
@@ -69,6 +73,18 @@ int push_args(parse_tree_node* p) {
     return 1 + argno;
 }
 
+string var_placement(parse_tree_node* p) {
+    parse_tree_node* declaration = p->get_declaration();
+    int depth = declaration->get_variable_depth();
+    if (depth == 0) {
+        return ((id_node*)p)->get_value();
+    }
+    if (depth == 1) {
+        int offset = 8 * declaration->get_variable_pos() + 16;
+        return std::to_string(offset) + "(%rbx)";
+    }
+    return "";
+}
 void evaluate_int_factor(parse_tree_node* p) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_type() == "paren_exp") {
@@ -94,8 +110,8 @@ void evaluate_int_factor(parse_tree_node* p) {
         cout << "pop %rbx" << endl;
         cout << "addq $" << 8*argno << ", %rsp" << endl;
     }
-    else if (child->get_type() == "identifier") {
-        // TODO
+    else if (child->get_type() == "id") {
+        cout << "movq " << var_placement(child) << ", %rax" << endl;
     }
     else if (child->get_type() == "int") {
         int value = ((int_node*)child)->get_value();
@@ -275,6 +291,9 @@ void generate_statement(parse_tree_node* p,
     else if (child->get_type() == "return statement") {
         generate_return_statement(child);
     }
+    else if (child->get_type() == "expression statement") {
+        evaluate_expression(child->get_child_n(0));
+    }
 }
 
 symbol_tables::symbol_tables(map<string, string> syms,
@@ -283,7 +302,8 @@ symbol_tables::symbol_tables(map<string, string> syms,
     string_table = strings;
 }
 
-int assign_variable_depth_param_list(parse_tree_node* p, int depth, int pos) {
+int assign_variable_depth_param_list(parse_tree_node* p, int pos) {
+    int depth = 1;
     parse_tree_node* child0 = p->get_child_n(0);
     if (child0->get_type() != "empty") {
         child0->set_variable_depth(depth);
@@ -291,7 +311,7 @@ int assign_variable_depth_param_list(parse_tree_node* p, int depth, int pos) {
         pos++;
         parse_tree_node* child1 = p->get_child_n(1);
         if (child1->get_type() != "empty") {
-            pos = assign_variable_depth_param_list(child1, depth, pos);
+            pos = assign_variable_depth_param_list(child1, pos);
         }
     }
     return pos;
@@ -322,11 +342,10 @@ int assign_variable_depth(parse_tree_node* p, int depth, int pos) {
     }
     else if (p->get_type() == "function_dec") {
         parse_tree_node* param = p->get_child_n(2);
-        int newPos = pos;
         if (param->get_child_n(0)->get_type() != "void") {
-            newPos = assign_variable_depth_param_list(param->get_child_n(0), depth + 1, newPos);
+            assign_variable_depth_param_list(param->get_child_n(0), 0);
         }
-        assign_variable_depth(p->get_child_n(3), depth + 2, newPos);
+        assign_variable_depth(p->get_child_n(3), 2, 0);
     }
     else {
         for (int i = 0; i < p->get_num_children(); i++) {

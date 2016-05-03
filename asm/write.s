@@ -6,6 +6,7 @@
 .text
 .globl main
 main:
+movq %rsp, %rbx
 movq $0, %rax
 movq $.PrintNewLineString, %rdi
 call printf

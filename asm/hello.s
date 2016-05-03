@@ -7,6 +7,7 @@ s0: .string "Hello World"
 .text
 .globl main
 main:
+movq %rsp, %rbx
 movq $s0, %rsi
 movq $0, %rax
 movq $.PrintStringString, %rdi

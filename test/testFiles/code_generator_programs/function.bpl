@@ -1,6 +1,10 @@
-int f(int x) {
-    return 3 + 4;
+int sub(int x, int y) {
+    return x - y;
+}
+int add4(int x) {
+    return x + 4;
 }
 void main() {
-    write(f(5));
+    write(add4(5));
+    write(sub(5,3));
 }

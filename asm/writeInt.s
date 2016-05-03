@@ -6,6 +6,7 @@
 .text
 .globl main
 main:
+movq %rsp, %rbx
 movq $5, %rax
 movq %rax, %rsi
 movq $0, %rax
