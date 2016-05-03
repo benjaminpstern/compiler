@@ -59,6 +59,16 @@ void evaluate_int_assignment(parse_tree_node* p) {
     cout << "movq $5, %rax" << endl;
 }
 
+int push_args(parse_tree_node* p) {
+    if (p->get_type() == "empty") {
+        return 0;
+    }
+    int argno = push_args(p->get_child_n(1));
+    evaluate_expression(p->get_child_n(0));
+    cout << "push %rax" << endl;
+    return 1 + argno;
+}
+
 void evaluate_int_factor(parse_tree_node* p) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_type() == "paren_exp") {
@@ -69,7 +79,20 @@ void evaluate_int_factor(parse_tree_node* p) {
         // TODO
     }
     else if (child->get_type() == "fun call") {
-        // TODO
+        string name = ((id_node*)child->get_child_n(0))->get_value();
+        parse_tree_node* args = child->get_child_n(1);
+        parse_tree_node* arg_list = args->get_child_n(0);
+        int argno;
+        if (arg_list->get_type() == "empty") {
+            argno = 0;
+        }
+        else {
+            argno = push_args(arg_list);
+        }
+        cout << "push %rbx" << endl;
+        cout << "call " << name << endl;
+        cout << "pop %rbx" << endl;
+        cout << "addq $" << 8*argno << ", %rsp" << endl;
     }
     else if (child->get_type() == "identifier") {
         // TODO
@@ -197,6 +220,16 @@ void evaluate_int_expression(parse_tree_node* p) {
     }
 }
 
+void evaluate_expression(parse_tree_node* p) {
+    string type = p->get_evaluated_type();
+    if (type == "int") {
+        evaluate_int_expression(p);
+    }
+    else {
+        // TODO
+    }
+}
+
 void generate_write(parse_tree_node* p, map<string, string> string_table) {
     parse_tree_node* print_this = p->get_child_n(0);
     string string_name;
@@ -222,11 +255,25 @@ void generate_write(parse_tree_node* p, map<string, string> string_table) {
     cout << "call printf" << endl;
 }
 
+void generate_return_statement(parse_tree_node* p) {
+    parse_tree_node* child = p->get_child_n(0);
+    if (child->get_evaluated_type() == "int") {
+        evaluate_int_expression(child);
+        cout << "ret" << endl;
+    }
+    else {
+        // TODO
+    }
+}
+
 void generate_statement(parse_tree_node* p,
         map<string, string> string_table) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_type() == "write statement") {
         generate_write(child, string_table);
+    }
+    else if (child->get_type() == "return statement") {
+        generate_return_statement(child);
     }
 }
 

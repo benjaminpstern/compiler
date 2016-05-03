@@ -39,5 +39,6 @@ void generate_statement(parse_tree_node* p,
         map<string, string> string_table);
 void generate_statement_list(parse_tree_node* p,
         map<string, string> string_table);
+void evaluate_expression(parse_tree_node* p);
 void evaluate_int_expression(parse_tree_node* p);
 #endif
