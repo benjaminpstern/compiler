@@ -34,12 +34,13 @@ map<string, string> find_strings(parse_tree_node* p);
 int find_strings(parse_tree_node* p, map<string, string>& m, int n);
 void get_global_variables(parse_tree_node* p);
 void generate_compound_statement(parse_tree_node* p,
-        map<string, string> string_table);
+        map<string, string> string_table, int stack_size);
 void generate_statement(parse_tree_node* p,
-        map<string, string> string_table);
+        map<string, string> string_table, int stack_size);
 void generate_statement_list(parse_tree_node* p,
-        map<string, string> string_table);
+        map<string, string> string_table, int stack_size);
 void evaluate_expression(parse_tree_node* p);
 void evaluate_int_expression(parse_tree_node* p);
 string var_placement(parse_tree_node* p);
+int max_pos(parse_tree_node* p);
 #endif

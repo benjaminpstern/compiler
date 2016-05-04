@@ -4,5 +4,5 @@ for file in `ls $code_dir`
 do
     execname=${file%.bpl}
     ./bpl ${code_dir}/${file} > asm/${execname}.s
-    gcc -o bin/${execname} asm/${execname}.s
+    gcc -g -o bin/${execname} asm/${execname}.s
 done

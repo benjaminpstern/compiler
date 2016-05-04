@@ -8,6 +8,22 @@ string new_label() {
     return label;
 }
 
+int max_pos(parse_tree_node* p) {
+    if (p->get_type() == "var_dec") {
+        if (p->get_variable_depth() > 1) {
+            return p->get_variable_pos();
+        }
+    }
+    int max = 0;
+    for (int i = 0; i < p->get_num_children(); i++) {
+        int pos = max_pos(p->get_child_n(i));
+        if (pos > max) {
+            max = pos;
+        }
+    }
+    return max;
+}
+
 void generate_code(parse_tree_node* p) {
     assign_variable_depth(p);
     map<string, string> string_table = generate_rodata(p);
@@ -23,23 +39,29 @@ void generate_function(parse_tree_node* p,
     string s = id->get_value();
     cout << s << ":" << endl;
     cout << "movq %rsp, %rbx" << endl;
-    generate_compound_statement(p->get_child_n(3), string_table);
+    int stack_size = max_pos(p) * 8 + 8;
+    cout << "subq $" << stack_size << ", %rsp" << endl;
+    generate_compound_statement(p->get_child_n(3), string_table, stack_size);
+    cout << "addq $" << stack_size << ", %rsp" << endl;
+    cout << "ret" << endl;
 }
 
 void generate_compound_statement(parse_tree_node* p,
-        map<string, string> string_table) {
-    generate_statement_list(p->get_child_n(1), string_table);
+        map<string, string> string_table,
+        int stack_size) {
+    generate_statement_list(p->get_child_n(1), string_table, stack_size);
 }
 
 void generate_statement_list(parse_tree_node* p,
-        map<string, string> string_table) {
+        map<string, string> string_table,
+        int stack_size) {
     parse_tree_node* stmt = p->get_child_n(0);
     parse_tree_node* stmt_list = p->get_child_n(1);
     if (stmt->get_type() != "empty") {
-        generate_statement(stmt, string_table);
+        generate_statement(stmt, string_table, stack_size);
     }
     if (stmt_list->get_type() != "empty") {
-        generate_statement_list(stmt_list, string_table);
+        generate_statement_list(stmt_list, string_table, stack_size);
     }
 }
 
@@ -83,7 +105,8 @@ string var_placement(parse_tree_node* p) {
         int offset = 8 * declaration->get_variable_pos() + 16;
         return std::to_string(offset) + "(%rbx)";
     }
-    return "";
+    int offset = -8 * declaration->get_variable_pos() - 8;
+    return std::to_string(offset) + "(%rbx)";
 }
 void evaluate_int_factor(parse_tree_node* p) {
     parse_tree_node* child = p->get_child_n(0);
@@ -117,7 +140,20 @@ void evaluate_int_factor(parse_tree_node* p) {
         int value = ((int_node*)child)->get_value();
         cout << "movq $" << value << ", %rax" << endl;
     }
+    else if (child->get_type() == "read") {
+        cout << "subq $40, %rsp" << endl;
+        cout << "movq $0, %rax" << endl;
+        cout << "movq %rsp, %rsi" << endl;
+        cout << "addq $24, %rsi" << endl;
+        cout << "movq $.ReadIntString, %rdi" << endl;
+        cout << "push %rbx" << endl;
+        cout << "call scanf" << endl;
+        cout << "pop %rbx" << endl;
+        cout << "movq 24(%rsp), %rax" << endl;
+        cout << "addq $40, %rsp" << endl;
+    }
     else {
+        // TODO
     }
 }
 
@@ -194,7 +230,7 @@ void evaluate_int_compexp(parse_tree_node* p) {
         string op = ((op_node*)p->get_child_n(1))->get_op();
         cout << "push %rax" << endl;
         evaluate_int_E(right);
-        cout << "cmp 0(%rsp), %eax" << endl;
+        cout << "cmp %eax, 0(%rsp)" << endl;
         string label1 = new_label();
         string label2 = new_label();
         string jump_op;
@@ -238,7 +274,7 @@ void evaluate_int_expression(parse_tree_node* p) {
 
 void evaluate_expression(parse_tree_node* p) {
     string type = p->get_evaluated_type();
-    if (type == "int") {
+    if (type == "int" || type == "void") {
         evaluate_int_expression(p);
     }
     else {
@@ -266,15 +302,18 @@ void generate_write(parse_tree_node* p, map<string, string> string_table) {
         else {
         }
     }
+    cout << "push %rbx" << endl;
     cout << "movq $0, %rax" << endl;
     cout << "movq $" << string_name << ", %rdi" << endl;
     cout << "call printf" << endl;
+    cout << "pop %rbx" << endl;
 }
 
-void generate_return_statement(parse_tree_node* p) {
+void generate_return_statement(parse_tree_node* p, int stack_size) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_evaluated_type() == "int") {
         evaluate_int_expression(child);
+        cout << "addq $" << stack_size << ", %rsp" << endl;
         cout << "ret" << endl;
     }
     else {
@@ -282,17 +321,62 @@ void generate_return_statement(parse_tree_node* p) {
     }
 }
 
+void generate_while_statement(parse_tree_node* p,
+        map<string, string> string_table,
+        int stack_size) {
+    string label1 = new_label();
+    string label2 = new_label();
+    cout << label1 << ":" << endl;
+    evaluate_expression(p->get_child_n(0));
+    cout << "cmp $0, %rax" << endl;
+    cout << "je " << label2 << endl;
+    generate_statement(p->get_child_n(1), string_table, stack_size);
+    cout << "jmp " << label1 << endl;
+    cout << label2 << ":" << endl;
+}
+
+void generate_if_statement(parse_tree_node* p,
+        map<string, string> string_table,
+        int stack_size) {
+    evaluate_expression(p->get_child_n(0));
+    string label1 = new_label();
+    parse_tree_node* else_node = p->get_child_n(2);
+    cout << "cmp $0, %rax" << endl;
+    cout << "je " << label1 << endl;
+    generate_statement(p->get_child_n(1), string_table, stack_size);
+    if (else_node->get_type() != "empty") {
+        string label2 = new_label();
+        cout << "jmp " << label2 << endl;
+        cout << label1 << ":" << endl;
+        generate_statement(else_node->get_child_n(0), string_table, stack_size);
+        cout << label2 << ":" << endl;
+    }
+    else {
+        cout << label1 << ":" << endl;
+    }
+}
+
 void generate_statement(parse_tree_node* p,
-        map<string, string> string_table) {
+        map<string, string> string_table,
+        int stack_size) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_type() == "write statement") {
         generate_write(child, string_table);
     }
     else if (child->get_type() == "return statement") {
-        generate_return_statement(child);
+        generate_return_statement(child, stack_size);
     }
     else if (child->get_type() == "expression statement") {
         evaluate_expression(child->get_child_n(0));
+    }
+    else if (child->get_type() == "if statement") {
+        generate_if_statement(child, string_table, stack_size);
+    }
+    else if (child->get_type() == "while statement") {
+        generate_while_statement(child, string_table, stack_size);
+    }
+    else if (child->get_type() == "compound statement") {
+        generate_compound_statement(child, string_table, stack_size);
     }
 }
 
@@ -361,6 +445,7 @@ void assign_variable_depth(parse_tree_node* p) {
 map<string, string> generate_rodata(parse_tree_node* p) {
     cout << ".section .rodata" << endl;
     cout << ".PrintIntString: .string \"%d\\n\"" << endl;
+    cout << ".ReadIntString: .string \"%d\"" << endl;
     cout << ".PrintFloatString: .string \"%f\\n\"" << endl;
     cout << ".PrintStringString: .string \"%s\"" << endl;
     cout << ".PrintNewLineString: .string \"\\n\"" << endl;
@@ -370,6 +455,7 @@ map<string, string> generate_rodata(parse_tree_node* p) {
         cout << it->second << ": .string " << it->first << endl;
     }
     string_table["\"%d\\n\""] = ".PrintIntString";
+    string_table["\"%d\""] = ".ReadIntString";
     string_table["\"%f\\n\""] = ".PrintFloatString";
     string_table["\"%s\""]= ".PrintStringString";
     string_table["\"\\n\""]= ".PrintNewLineString";
