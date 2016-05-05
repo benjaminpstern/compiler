@@ -80,9 +80,20 @@ string get_string(parse_tree_node* p) {
 
 void evaluate_int_assignment(parse_tree_node* p) {
     parse_tree_node* exp = p->get_child_n(1);
+    parse_tree_node* index_exp = p->get_child_n(0)->get_child_n(2);
     parse_tree_node* id = p->get_child_n(0)->get_child_n(1);
     evaluate_expression(exp);
-    cout << "movq %rax, " << var_placement(id) << endl;
+    if (index_exp->get_type() != "empty") {
+        cout << "push %rax" << endl;
+        evaluate_int_expression(index_exp);
+        string id_str = ((id_node*)id)->get_value();
+        cout << "movq 0(%rsp), %rdi" << endl;
+        cout << "movq %rdi, " << id_str << "(, %rax, 8)" << endl;
+        cout << "pop %rax" << endl;
+    }
+    else {
+        cout << "movq %rax, " << var_placement(id) << endl;
+    }
 }
 
 int push_args(parse_tree_node* p) {
@@ -115,7 +126,16 @@ void evaluate_int_factor(parse_tree_node* p) {
         evaluate_int_expression(child_child);
     }
     else if (child->get_type() == "array index") {
-        // TODO
+        parse_tree_node* id = child->get_child_n(0);
+        parse_tree_node* index_exp = child->get_child_n(1);
+        parse_tree_node* dec = id->get_declaration();
+        evaluate_int_expression(index_exp);
+        if (dec->get_variable_depth()) {
+        }
+        else {
+            string id_str = ((id_node*)id)->get_value();
+            cout << "movq " << id_str << "(, %rax, 8), %rax" << endl;
+        }
     }
     else if (child->get_type() == "fun call") {
         string name = ((id_node*)child->get_child_n(0))->get_value();
@@ -190,6 +210,7 @@ void evaluate_int_T(parse_tree_node* p) {
             cout << "imul 0(%rsp), %eax" << endl;
         }
         else {
+            cout << "push %rbx" << endl;
             cout << "movq 0(%rsp), %rbx" << endl;
             cout << "cltq" << endl;
             cout << "cqto" << endl;
@@ -197,6 +218,7 @@ void evaluate_int_T(parse_tree_node* p) {
             if (op == "%") {
                 cout << "movl %edx, %eax" << endl;
             }
+            cout << "pop %rbx" << endl;
         }
         cout << "addq $8, %rsp" << endl;
     }
@@ -486,7 +508,16 @@ void get_global_variables(parse_tree_node* p) {
     if (p->get_type() == "var_dec") {
         if (!p->get_variable_depth()) {
             string id = ((id_node*)(p->get_child_n(2)))->get_value();
-            cout << ".comm " << id << ", 8, 32" << endl;
+            int size;
+            if (p->get_child_n(3)->get_type() == "empty") {
+                size = 8;
+            }
+            else {
+                parse_tree_node* brackets = p->get_child_n(3);
+                int_node* size_node = (int_node*)(brackets->get_child_n(0));
+                size = size_node->get_value() * 8;
+            }
+            cout << ".comm " << id << ", " << size << ", 32" << endl;
         }
     }
     else {
