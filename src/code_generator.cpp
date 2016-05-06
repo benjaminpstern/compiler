@@ -14,7 +14,7 @@ int max_pos(parse_tree_node* p) {
             return p->get_variable_pos();
         }
     }
-    int max = 0;
+    int max = -1;
     for (int i = 0; i < p->get_num_children(); i++) {
         int pos = max_pos(p->get_child_n(i));
         if (pos > max) {
@@ -84,12 +84,28 @@ void evaluate_int_assignment(parse_tree_node* p) {
     parse_tree_node* id = p->get_child_n(0)->get_child_n(1);
     evaluate_expression(exp);
     if (index_exp->get_type() != "empty") {
-        cout << "push %rax" << endl;
-        evaluate_int_expression(index_exp);
-        string id_str = ((id_node*)id)->get_value();
-        cout << "movq 0(%rsp), %rdi" << endl;
-        cout << "movq %rdi, " << id_str << "(, %rax, 8)" << endl;
-        cout << "pop %rax" << endl;
+        parse_tree_node* dec = id->get_declaration();
+        if (!dec->get_variable_depth()) {
+            cout << "push %rax" << endl;
+            evaluate_int_expression(index_exp);
+            string id_str = ((id_node*)id)->get_value();
+            cout << "movq 0(%rsp), %rdi" << endl;
+            cout << "movq %rdi, " << id_str << "(, %rax, 8)" << endl;
+            cout << "pop %rax" << endl;
+        }
+        else if (dec->get_variable_depth() == 1) {
+        }
+        else {
+            cout << "push %rax" << endl;
+            evaluate_int_expression(index_exp);
+            cout << "salq $3, %rax" << endl;
+            cout << "addq %rbx, %rax" << endl;
+            int offset = dec->get_variable_pos() * -8 - 8;
+            cout << "addq $" << offset << ", %rax" << endl;
+            cout << "movq 0(%rsp), %rdi" << endl;
+            cout << "movq %rdi, 0(%rax)" << endl;
+            cout << "pop %rax" << endl;
+        }
     }
     else {
         cout << "movq %rax, " << var_placement(id) << endl;
@@ -130,11 +146,18 @@ void evaluate_int_factor(parse_tree_node* p) {
         parse_tree_node* index_exp = child->get_child_n(1);
         parse_tree_node* dec = id->get_declaration();
         evaluate_int_expression(index_exp);
-        if (dec->get_variable_depth()) {
-        }
-        else {
+        if (!dec->get_variable_depth()) {
             string id_str = ((id_node*)id)->get_value();
             cout << "movq " << id_str << "(, %rax, 8), %rax" << endl;
+        }
+        else if (dec->get_variable_depth() == 1) {
+        }
+        else {
+            cout << "salq $3, %rax" << endl;
+            cout << "addq %rbx, %rax" << endl;
+            int offset = -8 * dec->get_variable_pos() - 8;
+            cout << "addq $" << offset << ", %rax" << endl;
+            cout << "movq 0(%rax), %rax" << endl;
         }
     }
     else if (child->get_type() == "fun call") {
@@ -427,8 +450,17 @@ int assign_variable_depth_local_decs(parse_tree_node* p, int depth, int pos) {
     parse_tree_node* child0 = p->get_child_n(0);
     if (child0->get_type() != "empty") {
         child0->set_variable_depth(depth);
-        child0->set_variable_pos(pos);
-        pos++;
+        parse_tree_node* brackets = child0->get_child_n(3);
+        if (brackets->get_type() != "empty") {
+            int size = ((int_node*)brackets->get_child_n(0))->get_value();
+            pos += (size-1);
+            child0->set_variable_pos(pos);
+            pos++;
+        }
+        else {
+            child0->set_variable_pos(pos);
+            pos++;
+        }
         parse_tree_node* child1 = p->get_child_n(1);
         if (child1->get_type() != "empty") {
             pos = assign_variable_depth_local_decs(child1, depth, pos);
@@ -439,6 +471,7 @@ int assign_variable_depth_local_decs(parse_tree_node* p, int depth, int pos) {
 int assign_variable_depth(parse_tree_node* p, int depth, int pos) {
     if (p->get_type() == "var_dec") {
         p->set_variable_depth(depth);
+        p->set_variable_pos(pos);
     }
     if (p->get_type() == "compound statement") {
         int newDepth = depth;

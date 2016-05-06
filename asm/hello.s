@@ -9,7 +9,7 @@ s0: .string "Hello World"
 .globl main
 main:
 movq %rsp, %rbx
-subq $8, %rsp
+subq $0, %rsp
 movq $s0, %rsi
 push %rbx
 movq $0, %rax
@@ -21,5 +21,5 @@ movq $0, %rax
 movq $.PrintNewLineString, %rdi
 call printf
 pop %rbx
-addq $8, %rsp
+addq $0, %rsp
 ret

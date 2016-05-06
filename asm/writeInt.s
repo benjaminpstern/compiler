@@ -8,7 +8,7 @@
 .globl main
 main:
 movq %rsp, %rbx
-subq $8, %rsp
+subq $0, %rsp
 movq $5, %rax
 movq %rax, %rsi
 push %rbx
@@ -16,5 +16,5 @@ movq $0, %rax
 movq $.PrintIntString, %rdi
 call printf
 pop %rbx
-addq $8, %rsp
+addq $0, %rsp
 ret

@@ -295,7 +295,13 @@ parse_tree_node* parser::var_dec() {
         expect_token_type("[");
         token t = expect_token_type("int");
         internal_node* brackets = new internal_node("[]", 1, cur_line_num());
-        int_node* size = new int_node(std::stoi(t.get_str()), cur_line_num());
+        int size_i = std::stoi(t.get_str());
+        if (size_i < 1) {
+            string err = "Error: Array declaration with non-positive size: line ";
+            err += std::to_string(cur_line_num());
+            throw std::range_error(err);
+        }
+        int_node* size = new int_node(size_i, cur_line_num());
         brackets->set_child(0, size);
         p->set_child(3, brackets);
         expect_token_type("]");
