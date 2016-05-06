@@ -45,10 +45,12 @@ void sort( int A[], int first, int last ) {
     }
 }
 void main() {
-    int A[3];
-    range(A, 3);
+    int A[10];
+    range(A, 10);
     switch(A, 1, 2);
     switch(A, 6, 3);
-    sort(A, 0, 3);
-    writeArray(A, 3);
+    writeArray(A, 10);
+    writeln();
+    sort(A, 0, 10);
+    writeArray(A, 10);
 }
