@@ -8,6 +8,9 @@ string new_label() {
     return label;
 }
 
+int get_array_offset(parse_tree_node* p) {
+    return p->get_variable_pos() * -8 - 8;
+}
 int max_pos(parse_tree_node* p) {
     if (p->get_type() == "var_dec") {
         if (p->get_variable_depth() > 1) {
@@ -94,13 +97,20 @@ void evaluate_int_assignment(parse_tree_node* p) {
             cout << "pop %rax" << endl;
         }
         else if (dec->get_variable_depth() == 1) {
+            cout << "push %rax" << endl;
+            evaluate_int_expression(index_exp);
+            cout << "salq $3, %rax" << endl;
+            cout << "addq " << var_placement(id) << ", %rax" << endl;
+            cout << "movq 0(%rsp), %rdi" << endl;
+            cout << "movq %rdi, 0(%rax)" << endl;
+            cout << "pop %rax" << endl;
         }
         else {
             cout << "push %rax" << endl;
             evaluate_int_expression(index_exp);
             cout << "salq $3, %rax" << endl;
             cout << "addq %rbx, %rax" << endl;
-            int offset = dec->get_variable_pos() * -8 - 8;
+            int offset = get_array_offset(dec);
             cout << "addq $" << offset << ", %rax" << endl;
             cout << "movq 0(%rsp), %rdi" << endl;
             cout << "movq %rdi, 0(%rax)" << endl;
@@ -132,7 +142,7 @@ string var_placement(parse_tree_node* p) {
         int offset = 8 * declaration->get_variable_pos() + 16;
         return std::to_string(offset) + "(%rbx)";
     }
-    int offset = -8 * declaration->get_variable_pos() - 8;
+    int offset = get_array_offset(declaration);
     return std::to_string(offset) + "(%rbx)";
 }
 void evaluate_int_factor(parse_tree_node* p) {
@@ -151,11 +161,14 @@ void evaluate_int_factor(parse_tree_node* p) {
             cout << "movq " << id_str << "(, %rax, 8), %rax" << endl;
         }
         else if (dec->get_variable_depth() == 1) {
+            cout << "salq $3, %rax" << endl;
+            cout << "addq " << var_placement(id) << ", %rax" << endl;
+            cout << "movq 0(%rax), %rax" << endl;
         }
         else {
             cout << "salq $3, %rax" << endl;
             cout << "addq %rbx, %rax" << endl;
-            int offset = -8 * dec->get_variable_pos() - 8;
+            int offset = get_array_offset(dec);
             cout << "addq $" << offset << ", %rax" << endl;
             cout << "movq 0(%rax), %rax" << endl;
         }
@@ -317,10 +330,56 @@ void evaluate_int_expression(parse_tree_node* p) {
     }
 }
 
+void evaluate_array_factor(parse_tree_node* p) {
+    parse_tree_node* child = p->get_child_n(0);
+    parse_tree_node* dec = child->get_declaration();
+    if (!dec->get_variable_depth()) {
+        string id = ((id_node*)child)->get_value();
+        cout << "movq $" << id << ", %rax" << endl;
+    }
+    else if (dec->get_variable_depth() == 1) {
+        cout << "movq " << var_placement(child) << ", %rax" << endl;
+    }
+    else {
+        cout << "movq %rbx, %rax" << endl;
+        cout << "addq $" << get_array_offset(dec) << ", %rax" << endl;
+    }
+}
+
+void evaluate_array_F(parse_tree_node* p) {
+    evaluate_array_factor(p->get_child_n(1));
+}
+
+void evaluate_array_T(parse_tree_node* p) {
+    evaluate_array_F(p->get_child_n(2));
+}
+
+void evaluate_array_E(parse_tree_node* p) {
+    evaluate_array_T(p->get_child_n(2));
+}
+
+void evaluate_array_compexp(parse_tree_node* p) {
+    evaluate_array_E(p->get_child_n(0));
+}
+
+void evaluate_array_expression(parse_tree_node* p) {
+    parse_tree_node* child = p->get_child_n(0);
+    string type = child->get_type();
+    if (type == "assignment") {
+        // TODO
+    }
+    else {
+        evaluate_array_compexp(child);
+    }
+}
+
 void evaluate_expression(parse_tree_node* p) {
     string type = p->get_evaluated_type();
     if (type == "int" || type == "void") {
         evaluate_int_expression(p);
+    }
+    else if (type == "int[]" || type == "string[]") {
+        evaluate_array_expression(p);
     }
     else {
         // TODO
