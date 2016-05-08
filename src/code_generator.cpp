@@ -334,21 +334,23 @@ void code_generator::evaluate_int_compexp(parse_tree_node* p) {
 void code_generator::evaluate_int_assignment(parse_tree_node* p) {
     parse_tree_node* exp = p->get_child_n(1);
     parse_tree_node* index_exp = p->get_child_n(0)->get_child_n(2);
+    parse_tree_node* star = p->get_child_n(0)->get_child_n(0);
     parse_tree_node* id = p->get_child_n(0)->get_child_n(1);
     evaluate_expression(exp);
     if (index_exp->get_type() != "empty") {
         parse_tree_node* dec = id->get_declaration();
-        cout << "push %rax" << endl;
+        string space = allocate_tmp_storage();
+        cout << "movq %rax, " << space << endl;
         evaluate_int_expression(index_exp);
         if (!dec->get_variable_depth()) {
             string id_str = ((id_node*)id)->get_value();
-            cout << "movq 0(%rsp), %rdi" << endl;
+            cout << "movq " << space << ", %rdi" << endl;
             cout << "movq %rdi, " << id_str << "(, %rax, 8)" << endl;
         }
         else if (dec->get_variable_depth() == 1) {
             cout << "salq $3, %rax" << endl;
             cout << "addq " << var_placement(id) << ", %rax" << endl;
-            cout << "movq 0(%rsp), %rdi" << endl;
+            cout << "movq " << space << ", %rdi" << endl;
             cout << "movq %rdi, 0(%rax)" << endl;
         }
         else {
@@ -356,10 +358,15 @@ void code_generator::evaluate_int_assignment(parse_tree_node* p) {
             cout << "addq %rbx, %rax" << endl;
             int offset = get_array_offset(dec);
             cout << "addq $" << offset << ", %rax" << endl;
-            cout << "movq 0(%rsp), %rdi" << endl;
+            cout << "movq " << space << ", %rdi" << endl;
             cout << "movq %rdi, 0(%rax)" << endl;
         }
-        cout << "pop %rax" << endl;
+        deallocate_tmp_storage(space);
+    }
+    else if (star->get_type() != "empty") {
+        cout << "movq %rax, %rdi" << endl;
+        cout << "movq " << var_placement(id) << ", %rax" << endl;
+        cout << "movq %rdi, 0(%rax)" << endl;
     }
     else {
         cout << "movq %rax, " << var_placement(id) << endl;
@@ -427,7 +434,7 @@ void code_generator::evaluate_int_F(parse_tree_node* p) {
             cout << "imul $-1, %eax" << endl;
         }
         else if (operation == "*") {
-            // TODO
+            cout << "movq 0(%rax), %rax" << endl;
         }
         else if (operation == "&") {
             // TODO
