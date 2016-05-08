@@ -39,7 +39,8 @@ int main(int argc, char** argv) {
     try {
         internal_node* node = p.parse();
         type_check(node);
-        generate_code(node);
+        code_generator c;
+        c.generate_code(node);
         delete node;
     }
     catch (std::range_error& e) {
