@@ -296,10 +296,10 @@ void code_generator::evaluate_int_compexp(parse_tree_node* p) {
     evaluate_int_E(left);
     if (right->get_type() != "empty") {
         string op = ((op_node*)p->get_child_n(1))->get_op();
-        string space = allocate_tmp_storage();
-        cout << "movq %rax, " << space << endl;
+        string space = allocate_tmp_storage_32bit();
+        cout << "movl %eax, " << space << endl;
         evaluate_int_E(right);
-        cout << "cmp %rax, " << space << endl;
+        cout << "cmp %eax, " << space << endl;
         string label1 = new_label();
         string label2 = new_label();
         string jump_op;
@@ -327,7 +327,7 @@ void code_generator::evaluate_int_compexp(parse_tree_node* p) {
         cout << label1 << ":" << endl;
         cout << "movq $0, %rax" << endl;
         cout << label2 << ":" << endl;
-        deallocate_tmp_storage(space);
+        deallocate_tmp_storage_32bit(space);
     }
 }
 
