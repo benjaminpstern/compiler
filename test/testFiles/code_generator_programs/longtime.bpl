@@ -10,7 +10,7 @@ void main() {
     int n;
     int i;
     int r;
-    n = 100000000;
+    n = 1000000000;
     i = 0;
     r = 0;
     while (i < n) {

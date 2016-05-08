@@ -50,6 +50,7 @@ string code_generator::allocate_tmp_storage_32bit() {
             string reg = available_tmp_regs_[i];
             vecrm(available_tmp_regs_, reg);
             string ret = reg.replace(1, 1, "e");
+            return ret;
         }
     }
     cout << "push %rax" << endl;
@@ -392,7 +393,7 @@ void code_generator::evaluate_int_T(parse_tree_node* p) {
     evaluate_int_F(right);
     if (left->get_type() != "empty") {
         string space = allocate_tmp_storage_32bit();
-        cout << "movq %rax, " << space << endl;
+        cout << "movl %eax, " << space << endl;
         evaluate_int_T(left);
         string op = ((op_node*)p->get_child_n(1))->get_op();
         if (op == "*") {
