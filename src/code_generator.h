@@ -62,7 +62,12 @@ class code_generator {
         int push_args(parse_tree_node* p);
         void evaluate_array_expression(parse_tree_node* p);
         string get_string(parse_tree_node* p);
+        string allocate_tmp_storage();
+        void deallocate_tmp_storage(string space);
+        string allocate_tmp_storage_32bit();
+        void deallocate_tmp_storage_32bit(string space);
     private:
         int labelno_;
+        vector<string> available_tmp_regs_;
 };
 #endif

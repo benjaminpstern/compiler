@@ -1,9 +1,69 @@
+#ifndef ALGORITHM
+#include <algorithm>
+#endif
+#ifndef CHAR_UTILS
+#include "char_utils.h"
+#endif
 #ifndef CODE_GENERATOR
 #include "code_generator.h"
 #endif
 
+void vecrm(vector<string>& vec, string s) {
+    for (int i = 0; i < vec.size(); i++) {
+        if (vec[i] == s) {
+            vec.erase(vec.begin() + i);
+        }
+    }
+}
 code_generator::code_generator() {
     labelno_ = 0;
+    available_tmp_regs_ = register_names();
+    vecrm(available_tmp_regs_, "%rax");
+    vecrm(available_tmp_regs_, "%rbx");
+    vecrm(available_tmp_regs_, "%rdx");
+    vecrm(available_tmp_regs_, "%rdi");
+    vecrm(available_tmp_regs_, "%rsp");
+}
+
+string code_generator::allocate_tmp_storage() {
+    if (!available_tmp_regs_.empty()) {
+        string reg = available_tmp_regs_.back();
+        available_tmp_regs_.pop_back();
+        return reg;
+    }
+    cout << "push %rax" << endl;
+    return "0(%rsp)";
+}
+
+void code_generator::deallocate_tmp_storage(string space) {
+    if (space == "0(%rsp)") {
+        cout << "addq $8, %rsp" << endl;
+    }
+    else {
+        available_tmp_regs_.push_back(space);
+    }
+}
+
+string code_generator::allocate_tmp_storage_32bit() {
+    for (int i = 0; i < available_tmp_regs_.size(); i++) {
+        if (!is_numeric(available_tmp_regs_[i].at(2))) {
+            string reg = available_tmp_regs_[i];
+            vecrm(available_tmp_regs_, reg);
+            string ret = reg.replace(1, 1, "e");
+        }
+    }
+    cout << "push %rax" << endl;
+    return "0(%rsp)";
+}
+
+void code_generator::deallocate_tmp_storage_32bit(string space) {
+    if (space == "0(%rsp)") {
+        cout << "addq $8, %rsp" << endl;
+    }
+    else {
+        string newspace = space.replace(1,1,"r");
+        available_tmp_regs_.push_back(newspace);
+    }
 }
 
 void code_generator::generate_code(parse_tree_node* p) {
@@ -235,9 +295,10 @@ void code_generator::evaluate_int_compexp(parse_tree_node* p) {
     evaluate_int_E(left);
     if (right->get_type() != "empty") {
         string op = ((op_node*)p->get_child_n(1))->get_op();
-        cout << "push %rax" << endl;
+        string space = allocate_tmp_storage();
+        cout << "movq %rax, " << space << endl;
         evaluate_int_E(right);
-        cout << "cmp %eax, 0(%rsp)" << endl;
+        cout << "cmp %rax, " << space << endl;
         string label1 = new_label();
         string label2 = new_label();
         string jump_op;
@@ -265,7 +326,7 @@ void code_generator::evaluate_int_compexp(parse_tree_node* p) {
         cout << label1 << ":" << endl;
         cout << "movq $0, %rax" << endl;
         cout << label2 << ":" << endl;
-        cout << "addq $8, %rsp" << endl;
+        deallocate_tmp_storage(space);
     }
 }
 
@@ -309,7 +370,8 @@ void code_generator::evaluate_int_E(parse_tree_node* p) {
     parse_tree_node* right = p->get_child_n(2);
     evaluate_int_T(right);
     if (left->get_type() != "empty") {
-        cout << "push %rax" << endl;
+        string space = allocate_tmp_storage();
+        cout << "movq %rax, " << space << endl;
         evaluate_int_E(left);
         string op = ((op_node*)p->get_child_n(1))->get_op();
         string addop;
@@ -319,8 +381,8 @@ void code_generator::evaluate_int_E(parse_tree_node* p) {
         else {
             addop = "subq";
         }
-        cout << addop << " 0(%rsp), %rax" << endl;
-        cout << "addq $8, %rsp" << endl;
+        cout << addop << " " << space  << ", %rax" << endl;
+        deallocate_tmp_storage(space);
     }
 }
 
@@ -329,11 +391,12 @@ void code_generator::evaluate_int_T(parse_tree_node* p) {
     parse_tree_node* right = p->get_child_n(2);
     evaluate_int_F(right);
     if (left->get_type() != "empty") {
-        cout << "push %rax" << endl;
+        string space = allocate_tmp_storage_32bit();
+        cout << "movq %rax, " << space << endl;
         evaluate_int_T(left);
         string op = ((op_node*)p->get_child_n(1))->get_op();
         if (op == "*") {
-            cout << "imul 0(%rsp), %eax" << endl;
+            cout << "imul " << space << ", %eax" << endl;
         }
         else {
             cout << "push %rbx" << endl;
@@ -346,7 +409,7 @@ void code_generator::evaluate_int_T(parse_tree_node* p) {
             }
             cout << "pop %rbx" << endl;
         }
-        cout << "addq $8, %rsp" << endl;
+        deallocate_tmp_storage_32bit(space);
     }
 }
 
