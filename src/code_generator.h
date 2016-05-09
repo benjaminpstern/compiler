@@ -59,8 +59,16 @@ class code_generator {
         void evaluate_array_T(parse_tree_node* p);
         void evaluate_array_F(parse_tree_node* p);
         void evaluate_array_factor(parse_tree_node* p);
-        int push_args(parse_tree_node* p);
         void evaluate_array_expression(parse_tree_node* p);
+        void evaluate_string_expression(parse_tree_node* p);
+        void evaluate_pointer_compexp(parse_tree_node* p);
+        void evaluate_pointer_E(parse_tree_node* p);
+        void evaluate_pointer_T(parse_tree_node* p);
+        void evaluate_pointer_F(parse_tree_node* p);
+        void evaluate_pointer_factor(parse_tree_node* p);
+        void evaluate_pointer_expression(parse_tree_node* p);
+        void evaluate_pointer_assignment(parse_tree_node* p);
+        int push_args(parse_tree_node* p);
         string get_string(parse_tree_node* p);
         string allocate_tmp_storage();
         void deallocate_tmp_storage(string space);

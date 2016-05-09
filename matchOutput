@@ -1,3 +1,4 @@
+#!/bin/bash
 ./assemble
 passed="true"
 for program in `ls bin | grep ^[^\.]*$`

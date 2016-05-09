@@ -85,9 +85,9 @@ string code_generator::new_label() {
 
 map<string, string> code_generator::generate_rodata(parse_tree_node* p) {
     cout << ".section .rodata" << endl;
-    cout << ".PrintIntString: .string \"%d\\n\"" << endl;
+    cout << ".PrintIntString: .string \"%d \"" << endl;
     cout << ".ReadIntString: .string \"%d\"" << endl;
-    cout << ".PrintFloatString: .string \"%f\\n\"" << endl;
+    cout << ".PrintFloatString: .string \"%f \"" << endl;
     cout << ".PrintStringString: .string \"%s\"" << endl;
     cout << ".PrintNewLineString: .string \"\\n\"" << endl;
     map<string, string> string_table = find_strings(p);
@@ -95,9 +95,9 @@ map<string, string> code_generator::generate_rodata(parse_tree_node* p) {
             it != string_table.end(); ++it) {
         cout << it->second << ": .string " << it->first << endl;
     }
-    string_table["\"%d\\n\""] = ".PrintIntString";
+    string_table["\"%d \""] = ".PrintIntString";
     string_table["\"%d\""] = ".ReadIntString";
-    string_table["\"%f\\n\""] = ".PrintFloatString";
+    string_table["\"%f \""] = ".PrintFloatString";
     string_table["\"%s\""]= ".PrintStringString";
     string_table["\"\\n\""]= ".PrintNewLineString";
     return string_table;
@@ -227,7 +227,7 @@ void code_generator::generate_write(parse_tree_node* p, map<string, string> stri
             cout << "movq $" << print_string << ", %rsi" << endl;
         }
         else if (print_this->get_evaluated_type() == "int") {
-            string_name = string_table["\"%d\\n\""];
+            string_name = string_table["\"%d \""];
             evaluate_int_expression(print_this);
             cout << "movq %rax, %rsi" << endl;
         }
@@ -245,6 +245,11 @@ void code_generator::generate_return_statement(parse_tree_node* p, int stack_siz
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_evaluated_type() == "int") {
         evaluate_int_expression(child);
+        cout << "addq $" << stack_size << ", %rsp" << endl;
+        cout << "ret" << endl;
+    }
+    else if (child->get_evaluated_type() == "string") {
+        evaluate_string_expression(child);
         cout << "addq $" << stack_size << ", %rsp" << endl;
         cout << "ret" << endl;
     }
@@ -275,8 +280,11 @@ void code_generator::evaluate_expression(parse_tree_node* p) {
     else if (type == "int[]" || type == "string[]") {
         evaluate_array_expression(p);
     }
+    else if (type == "int*" || type == "string*") {
+        evaluate_pointer_expression(p);
+    }
     else {
-        // TODO
+        evaluate_string_expression(p);
     }
 }
 
@@ -434,10 +442,19 @@ void code_generator::evaluate_int_F(parse_tree_node* p) {
             cout << "imul $-1, %eax" << endl;
         }
         else if (operation == "*") {
+            evaluate_pointer_factor(child);
             cout << "movq 0(%rax), %rax" << endl;
         }
         else if (operation == "&") {
-            // TODO
+            parse_tree_node* lvalue = get_lvalue_id(child);
+            if (lvalue->get_declaration()->get_variable_depth() == 0) {
+                string id = ((id_node*)lvalue)->get_value();
+                cout << "movq $" << id << ", %rax" << endl;
+            }
+            else {
+                cout << "movq %rbx, %rax" << endl;
+                cout << "addq $" << get_variable_offset(lvalue) << ", %rax" << endl;
+            }
         }
     }
 }
@@ -558,6 +575,89 @@ void code_generator::evaluate_array_factor(parse_tree_node* p) {
         cout << "movq %rbx, %rax" << endl;
         cout << "addq $" << get_array_offset(dec) << ", %rax" << endl;
     }
+}
+
+void code_generator::evaluate_pointer_expression(parse_tree_node* p) {
+    parse_tree_node* child = p->get_child_n(0);
+    string type = child->get_type();
+    if (type == "assignment") {
+        evaluate_pointer_assignment(p->get_child_n(0));
+    }
+    else {
+        evaluate_pointer_compexp(child);
+    }
+}
+
+void code_generator::evaluate_pointer_assignment(parse_tree_node* p) {
+    parse_tree_node* exp = p->get_child_n(1);
+    parse_tree_node* id = p->get_child_n(0)->get_child_n(1);
+    evaluate_expression(exp);
+    cout << "movq %rax, " << var_placement(id) << endl;
+}
+
+void code_generator::evaluate_pointer_compexp(parse_tree_node* p) {
+    evaluate_pointer_E(p->get_child_n(0));
+}
+
+void code_generator::evaluate_pointer_E(parse_tree_node* p) {
+    evaluate_pointer_T(p->get_child_n(2));
+}
+
+void code_generator::evaluate_pointer_T(parse_tree_node* p) {
+    evaluate_pointer_F(p->get_child_n(2));
+}
+
+void code_generator::evaluate_pointer_F(parse_tree_node* p) {
+    parse_tree_node* op = p->get_child_n(0);
+    parse_tree_node* child = p->get_child_n(1);
+    if (op->get_type() == "empty") {
+        evaluate_int_factor(child);
+    }
+    else {
+        parse_tree_node* lvalue = get_lvalue_id(child);
+        if (lvalue->get_declaration()->get_variable_depth() == 0) {
+            string id = ((id_node*)lvalue)->get_value();
+            cout << "movq $" << id << ", %rax" << endl;
+        }
+        else {
+            cout << "movq %rbx, %rax" << endl;
+            cout << "addq $" << get_variable_offset(lvalue) << ", %rax" << endl;
+        }
+    }
+}
+
+void code_generator::evaluate_pointer_factor(parse_tree_node* p) {
+    parse_tree_node* child = p->get_child_n(0);
+    if (child->get_type() == "id") {
+        parse_tree_node* dec = child->get_declaration();
+        if (!dec->get_variable_depth()) {
+            string id = ((id_node*)child)->get_value();
+            cout << "movq " << id << ", %rax" << endl;
+        }
+        else {
+            cout << "movq " << var_placement(child) << ", %rax" << endl;
+        }
+    }
+    else if (child->get_type() == "fun call") {
+        string name = ((id_node*)child->get_child_n(0))->get_value();
+        parse_tree_node* args = child->get_child_n(1);
+        parse_tree_node* arg_list = args->get_child_n(0);
+        int argno;
+        if (arg_list->get_type() == "empty") {
+            argno = 0;
+        }
+        else {
+            argno = push_args(arg_list);
+        }
+        cout << "push %rbx" << endl;
+        cout << "call " << name << endl;
+        cout << "pop %rbx" << endl;
+        cout << "addq $" << 8*argno << ", %rsp" << endl;
+    }
+}
+
+void code_generator::evaluate_string_expression(parse_tree_node* p) {
+    // TODO
 }
 
 string code_generator::get_string(parse_tree_node* p) {

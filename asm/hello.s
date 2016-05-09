@@ -1,7 +1,7 @@
 .section .rodata
-.PrintIntString: .string "%d\n"
+.PrintIntString: .string "%d "
 .ReadIntString: .string "%d"
-.PrintFloatString: .string "%f\n"
+.PrintFloatString: .string "%f "
 .PrintStringString: .string "%s"
 .PrintNewLineString: .string "\n"
 s0: .string "Hello World"
