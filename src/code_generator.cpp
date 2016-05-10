@@ -15,7 +15,7 @@ void vecrm(vector<string>& vec, string s) {
         }
     }
 }
-code_generator::code_generator() {
+code_generator::code_generator() : string_table_() {
     labelno_ = 0;
     available_tmp_regs_ = register_names();
     vecrm(available_tmp_regs_, "%rax");
@@ -69,11 +69,11 @@ void code_generator::deallocate_tmp_storage_32bit(string space) {
 
 void code_generator::generate_code(parse_tree_node* p) {
     assign_variable_depth(p);
-    map<string, string> string_table = generate_rodata(p);
+    string_table_ = generate_rodata(p);
     cout << ".text" << endl;
     allocate_global_variables(p);
     cout << ".globl main" << endl;
-    generate_functions(p, string_table);
+    generate_functions(p);
 }
 
 string code_generator::new_label() {
@@ -126,49 +126,44 @@ void code_generator::allocate_global_variables(parse_tree_node* p) {
     }
 }
 
-void code_generator::generate_functions(parse_tree_node* p, map<string, string> string_table) {
+void code_generator::generate_functions(parse_tree_node* p) {
     if (p->get_type() == "function_dec") {
-        generate_function(p, string_table);
+        generate_function(p);
     }
     else {
         for (int i = 0; i < p->get_num_children(); i++) {
-            generate_functions(p->get_child_n(i), string_table);
+            generate_functions(p->get_child_n(i));
         }
     }
 }
 
-void code_generator::generate_function(parse_tree_node* p,
-        map<string, string> string_table) {
+void code_generator::generate_function(parse_tree_node* p) {
     id_node* id = (id_node*)p->get_child_n(1);
     string s = id->get_value();
     cout << s << ":" << endl;
     cout << "movq %rsp, %rbx" << endl;
     int stack_size = max_pos(p) * 8 + 8;
     cout << "subq $" << stack_size << ", %rsp" << endl;
-    generate_compound_statement(p->get_child_n(3), string_table, stack_size);
+    generate_compound_statement(p->get_child_n(3), stack_size);
     cout << "addq $" << stack_size << ", %rsp" << endl;
     cout << "ret" << endl;
 }
 
-void code_generator::generate_statement_list(parse_tree_node* p,
-        map<string, string> string_table,
-        int stack_size) {
+void code_generator::generate_statement_list(parse_tree_node* p, int stack_size) {
     parse_tree_node* stmt = p->get_child_n(0);
     parse_tree_node* stmt_list = p->get_child_n(1);
     if (stmt->get_type() != "empty") {
-        generate_statement(stmt, string_table, stack_size);
+        generate_statement(stmt, stack_size);
     }
     if (stmt_list->get_type() != "empty") {
-        generate_statement_list(stmt_list, string_table, stack_size);
+        generate_statement_list(stmt_list, stack_size);
     }
 }
 
-void code_generator::generate_statement(parse_tree_node* p,
-        map<string, string> string_table,
-        int stack_size) {
+void code_generator::generate_statement(parse_tree_node* p, int stack_size) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_type() == "write statement") {
-        generate_write(child, string_table);
+        generate_write(child);
     }
     else if (child->get_type() == "return statement") {
         generate_return_statement(child, stack_size);
@@ -177,36 +172,32 @@ void code_generator::generate_statement(parse_tree_node* p,
         evaluate_expression(child->get_child_n(0));
     }
     else if (child->get_type() == "if statement") {
-        generate_if_statement(child, string_table, stack_size);
+        generate_if_statement(child, stack_size);
     }
     else if (child->get_type() == "while statement") {
-        generate_while_statement(child, string_table, stack_size);
+        generate_while_statement(child, stack_size);
     }
     else if (child->get_type() == "compound statement") {
-        generate_compound_statement(child, string_table, stack_size);
+        generate_compound_statement(child, stack_size);
     }
 }
 
-void code_generator::generate_compound_statement(parse_tree_node* p,
-        map<string, string> string_table,
-        int stack_size) {
-    generate_statement_list(p->get_child_n(1), string_table, stack_size);
+void code_generator::generate_compound_statement(parse_tree_node* p, int stack_size) {
+    generate_statement_list(p->get_child_n(1), stack_size);
 }
 
-void code_generator::generate_if_statement(parse_tree_node* p,
-        map<string, string> string_table,
-        int stack_size) {
+void code_generator::generate_if_statement(parse_tree_node* p, int stack_size) {
     evaluate_expression(p->get_child_n(0));
     string label1 = new_label();
     parse_tree_node* else_node = p->get_child_n(2);
     cout << "cmp $0, %rax" << endl;
     cout << "je " << label1 << endl;
-    generate_statement(p->get_child_n(1), string_table, stack_size);
+    generate_statement(p->get_child_n(1), stack_size);
     if (else_node->get_type() != "empty") {
         string label2 = new_label();
         cout << "jmp " << label2 << endl;
         cout << label1 << ":" << endl;
-        generate_statement(else_node->get_child_n(0), string_table, stack_size);
+        generate_statement(else_node->get_child_n(0), stack_size);
         cout << label2 << ":" << endl;
     }
     else {
@@ -214,20 +205,20 @@ void code_generator::generate_if_statement(parse_tree_node* p,
     }
 }
 
-void code_generator::generate_write(parse_tree_node* p, map<string, string> string_table) {
+void code_generator::generate_write(parse_tree_node* p) {
     parse_tree_node* print_this = p->get_child_n(0);
     string string_name;
     if (print_this->get_type() == "empty") {
-        string_name = string_table["\"\\n\""];
+        string_name = string_table_["\"\\n\""];
     }
     else {
         if (print_this->get_evaluated_type() == "string") {
-            string_name = string_table["\"%s\""];
-            string print_string = string_table[get_string(print_this)];
-            cout << "movq $" << print_string << ", %rsi" << endl;
+            string_name = string_table_["\"%s\""];
+            evaluate_int_expression(print_this);
+            cout << "movq %rax, %rsi" << endl;
         }
         else if (print_this->get_evaluated_type() == "int") {
-            string_name = string_table["\"%d \""];
+            string_name = string_table_["\"%d \""];
             evaluate_int_expression(print_this);
             cout << "movq %rax, %rsi" << endl;
         }
@@ -243,13 +234,8 @@ void code_generator::generate_write(parse_tree_node* p, map<string, string> stri
 
 void code_generator::generate_return_statement(parse_tree_node* p, int stack_size) {
     parse_tree_node* child = p->get_child_n(0);
-    if (child->get_evaluated_type() == "int") {
+    if (child->get_evaluated_type() == "int" || child->get_evaluated_type() == "string") {
         evaluate_int_expression(child);
-        cout << "addq $" << stack_size << ", %rsp" << endl;
-        cout << "ret" << endl;
-    }
-    else if (child->get_evaluated_type() == "string") {
-        evaluate_string_expression(child);
         cout << "addq $" << stack_size << ", %rsp" << endl;
         cout << "ret" << endl;
     }
@@ -258,23 +244,21 @@ void code_generator::generate_return_statement(parse_tree_node* p, int stack_siz
     }
 }
 
-void code_generator::generate_while_statement(parse_tree_node* p,
-        map<string, string> string_table,
-        int stack_size) {
+void code_generator::generate_while_statement(parse_tree_node* p, int stack_size) {
     string label1 = new_label();
     string label2 = new_label();
     cout << label1 << ":" << endl;
     evaluate_expression(p->get_child_n(0));
     cout << "cmp $0, %rax" << endl;
     cout << "je " << label2 << endl;
-    generate_statement(p->get_child_n(1), string_table, stack_size);
+    generate_statement(p->get_child_n(1), stack_size);
     cout << "jmp " << label1 << endl;
     cout << label2 << ":" << endl;
 }
 
 void code_generator::evaluate_expression(parse_tree_node* p) {
     string type = p->get_evaluated_type();
-    if (type == "int" || type == "void") {
+    if (type == "int" || type == "void" || type == "string") {
         evaluate_int_expression(p);
     }
     else if (type == "int[]" || type == "string[]") {
@@ -284,7 +268,7 @@ void code_generator::evaluate_expression(parse_tree_node* p) {
         evaluate_pointer_expression(p);
     }
     else {
-        evaluate_string_expression(p);
+        // TODO
     }
 }
 
@@ -416,7 +400,7 @@ void code_generator::evaluate_int_T(parse_tree_node* p) {
         }
         else {
             cout << "push %rbx" << endl;
-            cout << "movq 0(%rsp), %rbx" << endl;
+            cout << "movl " << space << ", %ebx" << endl;
             cout << "cltq" << endl;
             cout << "cqto" << endl;
             cout << "idiv %ebx" << endl;
@@ -509,6 +493,11 @@ void code_generator::evaluate_int_factor(parse_tree_node* p) {
     else if (child->get_type() == "int") {
         int value = ((int_node*)child)->get_value();
         cout << "movq $" << value << ", %rax" << endl;
+    }
+    else if (child->get_type() == "string") {
+        string str = ((string_node*)child)->get_value();
+        string strlabel = string_table_[str];
+        cout << "movq $" << strlabel << ", %rax" << endl;
     }
     else if (child->get_type() == "read") {
         cout << "subq $40, %rsp" << endl;
@@ -654,10 +643,6 @@ void code_generator::evaluate_pointer_factor(parse_tree_node* p) {
         cout << "pop %rbx" << endl;
         cout << "addq $" << 8*argno << ", %rsp" << endl;
     }
-}
-
-void code_generator::evaluate_string_expression(parse_tree_node* p) {
-    // TODO
 }
 
 string code_generator::get_string(parse_tree_node* p) {

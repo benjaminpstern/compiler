@@ -31,20 +31,14 @@ class code_generator {
         map<string, string> generate_rodata(parse_tree_node* p);
         void generate_code(parse_tree_node* p);
         void allocate_global_variables(parse_tree_node* p);
-        void generate_functions(parse_tree_node* p, map<string, string> string_table);
-        void generate_function(parse_tree_node* p, map<string, string> string_table);
-        void generate_statement_list(parse_tree_node* p,
-                map<string, string> string_table, int stack_size);
-        void generate_statement(parse_tree_node* p,
-                map<string, string> string_table, int stack_size);
-        void generate_compound_statement(parse_tree_node* p,
-                map<string, string> string_table, int stack_size);
-        void generate_write(parse_tree_node* p,
-                map<string, string> string_table);
-        void generate_if_statement(parse_tree_node* p,
-                map<string, string> string_table, int stack_size);
-        void generate_while_statement(parse_tree_node* p,
-                map<string, string> string_table, int stack_size);
+        void generate_functions(parse_tree_node* p);
+        void generate_function(parse_tree_node* p);
+        void generate_statement_list(parse_tree_node* p, int stack_size);
+        void generate_statement(parse_tree_node* p, int stack_size);
+        void generate_compound_statement(parse_tree_node* p, int stack_size);
+        void generate_write(parse_tree_node* p);
+        void generate_if_statement(parse_tree_node* p, int stack_size);
+        void generate_while_statement(parse_tree_node* p, int stack_size);
         void generate_return_statement(parse_tree_node* p, int stack_size);
         void evaluate_expression(parse_tree_node* p);
         void evaluate_int_expression(parse_tree_node* p);
@@ -77,5 +71,6 @@ class code_generator {
     private:
         int labelno_;
         vector<string> available_tmp_regs_;
+        map<string, string> string_table_;
 };
 #endif

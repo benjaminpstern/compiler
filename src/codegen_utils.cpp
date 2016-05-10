@@ -1,6 +1,7 @@
 #ifndef CODEGEN_UTILS
 #include "codegen_utils.h"
 #endif
+
 int assign_variable_depth_param_list(parse_tree_node* p, int pos) {
     int depth = 1;
     parse_tree_node* child0 = p->get_child_n(0);
@@ -38,6 +39,7 @@ int assign_variable_depth_local_decs(parse_tree_node* p, int depth, int pos) {
     }
     return pos;
 }
+
 int assign_variable_depth(parse_tree_node* p, int depth, int pos) {
     if (p->get_type() == "var_dec") {
         p->set_variable_depth(depth);
@@ -63,6 +65,7 @@ int assign_variable_depth(parse_tree_node* p, int depth, int pos) {
     }
     return pos;
 }
+
 void assign_variable_depth(parse_tree_node* p) {
     assign_variable_depth(p, 0, 0);
 }

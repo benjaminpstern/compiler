@@ -10,7 +10,8 @@ s0: .string "Hello World"
 main:
 movq %rsp, %rbx
 subq $0, %rsp
-movq $s0, %rsi
+movq $s0, %rax
+movq %rax, %rsi
 push %rbx
 movq $0, %rax
 movq $.PrintStringString, %rdi

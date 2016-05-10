@@ -18,5 +18,7 @@ void main() {
     f(8);
     *aptr = 10;
     write(a);
+    *aptr = *aptr + 1;
+    write(a);
     writeln();
 }
