@@ -1,0 +1,19 @@
+#!/bin/bash
+./assemble
+passed="true"
+for program in `ls bin | grep ^[^\.]*$`
+do
+    bin/$program > tmpFile
+    diffout=`diff test/output/${program}.txt tmpFile`
+    wcout=`echo $diffout | wc -c`
+    if [ "$wcout" != "1" ]
+    then
+        echo $program not good
+        passed="false"
+    fi
+done
+if [ $passed == "true" ]
+then
+    echo "Everything passed"
+fi
+rm tmpFile

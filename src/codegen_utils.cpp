@@ -1,6 +1,7 @@
 #ifndef CODEGEN_UTILS
 #include "codegen_utils.h"
 #endif
+
 int assign_variable_depth_param_list(parse_tree_node* p, int pos) {
     int depth = 1;
     parse_tree_node* child0 = p->get_child_n(0);
@@ -38,6 +39,7 @@ int assign_variable_depth_local_decs(parse_tree_node* p, int depth, int pos) {
     }
     return pos;
 }
+
 int assign_variable_depth(parse_tree_node* p, int depth, int pos) {
     if (p->get_type() == "var_dec") {
         p->set_variable_depth(depth);
@@ -63,6 +65,7 @@ int assign_variable_depth(parse_tree_node* p, int depth, int pos) {
     }
     return pos;
 }
+
 void assign_variable_depth(parse_tree_node* p) {
     assign_variable_depth(p, 0, 0);
 }
@@ -87,6 +90,10 @@ int find_strings(parse_tree_node* p, map<string, string>& m, int n) {
     return n;
 }
 
+int get_array_offset(parse_tree_node* p) {
+    return p->get_variable_pos() * -8 - 8;
+}
+
 string var_placement(parse_tree_node* p) {
     parse_tree_node* declaration = p->get_declaration();
     int depth = declaration->get_variable_depth();
@@ -101,9 +108,14 @@ string var_placement(parse_tree_node* p) {
     return std::to_string(offset) + "(%rbx)";
 }
 
-int get_array_offset(parse_tree_node* p) {
-    return p->get_variable_pos() * -8 - 8;
+int get_variable_offset(parse_tree_node* p) {
+    parse_tree_node* dec = p->get_declaration();
+    if (dec->get_variable_depth() == 1) {
+        return 8 * dec->get_variable_pos() + 16;
+    }
+    return get_array_offset(dec);
 }
+
 int max_pos(parse_tree_node* p) {
     if (p->get_type() == "var_dec") {
         if (p->get_variable_depth() > 1) {
@@ -119,12 +131,26 @@ int max_pos(parse_tree_node* p) {
     }
     return max;
 }
+
 vector<string> register_names() {
     vector<string> v;
-    string regs[16] = { "rax", "rbx", "rcx", "rdx", "rbp", "rsp", "rsi",
-        "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"};
+    string regs[16] = { "%rax", "%rbx", "%rcx", "%rdx", "%rbp", "%rsp", "%rsi",
+        "%rdi", "%r8", "%r9", "%r10", "%r11", "%r12", "%r13", "%r14", "%r15"};
     for (int i = 0; i < 16; i++) {
         v.push_back(regs[i]);
     }
     return v;
+}
+
+parse_tree_node* get_lvalue_id(parse_tree_node* p) {
+    if (p->get_type() == "id") {
+        return p;
+    }
+    for (int i = 0; i < p->get_num_children(); i++) {
+        parse_tree_node* child = get_lvalue_id(p->get_child_n(i));
+        if (child != NULL) {
+            return child;
+        }
+    }
+    return NULL;
 }

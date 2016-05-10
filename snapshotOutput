@@ -1,0 +1,6 @@
+#!/bin/bash
+./assemble
+for program in `ls bin | grep ^[^\.]*$`
+do
+    bin/$program > test/output/${program}.txt
+done
