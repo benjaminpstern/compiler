@@ -35,3 +35,4 @@ $(TEST_EXECUTABLE): $(OBJS) $(TEST_FILES)
 
 clean:
 	$(RM) $(TARGETS)
+	$(RM) bin/* asm/*
