@@ -78,7 +78,7 @@ void code_generator::generate_code(parse_tree_node* p) {
 
 string code_generator::new_label() {
     static int labelno = 0;
-    string label = "L" + std::to_string(labelno);
+    string label = ".L" + std::to_string(labelno);
     labelno++;
     return label;
 }
@@ -214,12 +214,12 @@ void code_generator::generate_write(parse_tree_node* p) {
     else {
         if (print_this->get_evaluated_type() == "string") {
             string_name = string_table_["\"%s\""];
-            evaluate_int_expression(print_this);
+            evaluate_val_expression(print_this);
             cout << "movq %rax, %rsi" << endl;
         }
         else if (print_this->get_evaluated_type() == "int") {
             string_name = string_table_["\"%d \""];
-            evaluate_int_expression(print_this);
+            evaluate_val_expression(print_this);
             cout << "movq %rax, %rsi" << endl;
         }
         else {
@@ -235,7 +235,7 @@ void code_generator::generate_write(parse_tree_node* p) {
 void code_generator::generate_return_statement(parse_tree_node* p, int stack_size) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_evaluated_type() == "int" || child->get_evaluated_type() == "string") {
-        evaluate_int_expression(child);
+        evaluate_val_expression(child);
         cout << "addq $" << stack_size << ", %rsp" << endl;
         cout << "ret" << endl;
     }
@@ -259,7 +259,7 @@ void code_generator::generate_while_statement(parse_tree_node* p, int stack_size
 void code_generator::evaluate_expression(parse_tree_node* p) {
     string type = p->get_evaluated_type();
     if (type == "int" || type == "void" || type == "string") {
-        evaluate_int_expression(p);
+        evaluate_val_expression(p);
     }
     else if (type == "int[]" || type == "string[]") {
         evaluate_array_expression(p);
@@ -272,25 +272,25 @@ void code_generator::evaluate_expression(parse_tree_node* p) {
     }
 }
 
-void code_generator::evaluate_int_expression(parse_tree_node* p) {
+void code_generator::evaluate_val_expression(parse_tree_node* p) {
     string type = p->get_child_n(0)->get_type();
     if (type == "assignment") {
-        evaluate_int_assignment(p->get_child_n(0));
+        evaluate_val_assignment(p->get_child_n(0));
     }
     else {
-        evaluate_int_compexp(p->get_child_n(0));
+        evaluate_val_compexp(p->get_child_n(0));
     }
 }
 
-void code_generator::evaluate_int_compexp(parse_tree_node* p) {
+void code_generator::evaluate_val_compexp(parse_tree_node* p) {
     parse_tree_node* left = p->get_child_n(0);
     parse_tree_node* right = p->get_child_n(2);
-    evaluate_int_E(left);
+    evaluate_val_E(left);
     if (right->get_type() != "empty") {
         string op = ((op_node*)p->get_child_n(1))->get_op();
         string space = allocate_tmp_storage_32bit();
         cout << "movl %eax, " << space << endl;
-        evaluate_int_E(right);
+        evaluate_val_E(right);
         cout << "cmp %eax, " << space << endl;
         string label1 = new_label();
         string label2 = new_label();
@@ -323,7 +323,7 @@ void code_generator::evaluate_int_compexp(parse_tree_node* p) {
     }
 }
 
-void code_generator::evaluate_int_assignment(parse_tree_node* p) {
+void code_generator::evaluate_val_assignment(parse_tree_node* p) {
     parse_tree_node* exp = p->get_child_n(1);
     parse_tree_node* index_exp = p->get_child_n(0)->get_child_n(2);
     parse_tree_node* star = p->get_child_n(0)->get_child_n(0);
@@ -333,7 +333,7 @@ void code_generator::evaluate_int_assignment(parse_tree_node* p) {
         parse_tree_node* dec = id->get_declaration();
         string space = allocate_tmp_storage();
         cout << "movq %rax, " << space << endl;
-        evaluate_int_expression(index_exp);
+        evaluate_val_expression(index_exp);
         if (!dec->get_variable_depth()) {
             string id_str = ((id_node*)id)->get_value();
             cout << "movq " << space << ", %rdi" << endl;
@@ -365,14 +365,14 @@ void code_generator::evaluate_int_assignment(parse_tree_node* p) {
     }
 }
 
-void code_generator::evaluate_int_E(parse_tree_node* p) {
+void code_generator::evaluate_val_E(parse_tree_node* p) {
     parse_tree_node* left = p->get_child_n(0);
     parse_tree_node* right = p->get_child_n(2);
-    evaluate_int_T(right);
+    evaluate_val_T(right);
     if (left->get_type() != "empty") {
         string space = allocate_tmp_storage();
         cout << "movq %rax, " << space << endl;
-        evaluate_int_E(left);
+        evaluate_val_E(left);
         string op = ((op_node*)p->get_child_n(1))->get_op();
         string addop;
         if (op == "+") {
@@ -386,14 +386,14 @@ void code_generator::evaluate_int_E(parse_tree_node* p) {
     }
 }
 
-void code_generator::evaluate_int_T(parse_tree_node* p) {
+void code_generator::evaluate_val_T(parse_tree_node* p) {
     parse_tree_node* left = p->get_child_n(0);
     parse_tree_node* right = p->get_child_n(2);
-    evaluate_int_F(right);
+    evaluate_val_F(right);
     if (left->get_type() != "empty") {
         string space = allocate_tmp_storage_32bit();
         cout << "movl %eax, " << space << endl;
-        evaluate_int_T(left);
+        evaluate_val_T(left);
         string op = ((op_node*)p->get_child_n(1))->get_op();
         if (op == "*") {
             cout << "imul " << space << ", %eax" << endl;
@@ -413,16 +413,16 @@ void code_generator::evaluate_int_T(parse_tree_node* p) {
     }
 }
 
-void code_generator::evaluate_int_F(parse_tree_node* p) {
+void code_generator::evaluate_val_F(parse_tree_node* p) {
     parse_tree_node* op = p->get_child_n(0);
     parse_tree_node* child = p->get_child_n(1);
     if (op->get_type() == "empty") {
-        evaluate_int_factor(child);
+        evaluate_val_factor(child);
     }
     else {
         string operation = ((op_node*)op)->get_op();
         if (operation == "-") {
-            evaluate_int_F(child);
+            evaluate_val_F(child);
             cout << "imul $-1, %eax" << endl;
         }
         else if (operation == "*") {
@@ -443,17 +443,17 @@ void code_generator::evaluate_int_F(parse_tree_node* p) {
     }
 }
 
-void code_generator::evaluate_int_factor(parse_tree_node* p) {
+void code_generator::evaluate_val_factor(parse_tree_node* p) {
     parse_tree_node* child = p->get_child_n(0);
     if (child->get_type() == "paren_exp") {
         parse_tree_node* child_child = child->get_child_n(0);
-        evaluate_int_expression(child_child);
+        evaluate_val_expression(child_child);
     }
     else if (child->get_type() == "array index") {
         parse_tree_node* id = child->get_child_n(0);
         parse_tree_node* index_exp = child->get_child_n(1);
         parse_tree_node* dec = id->get_declaration();
-        evaluate_int_expression(index_exp);
+        evaluate_val_expression(index_exp);
         if (!dec->get_variable_depth()) {
             string id_str = ((id_node*)id)->get_value();
             cout << "movq " << id_str << "(, %rax, 8), %rax" << endl;
@@ -600,7 +600,7 @@ void code_generator::evaluate_pointer_F(parse_tree_node* p) {
     parse_tree_node* op = p->get_child_n(0);
     parse_tree_node* child = p->get_child_n(1);
     if (op->get_type() == "empty") {
-        evaluate_int_factor(child);
+        evaluate_val_factor(child);
     }
     else {
         parse_tree_node* lvalue = get_lvalue_id(child);
