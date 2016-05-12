@@ -240,7 +240,9 @@ void code_generator::generate_return_statement(parse_tree_node* p, int stack_siz
         cout << "ret" << endl;
     }
     else {
-        // TODO
+        evaluate_pointer_expression(child);
+        cout << "addq $" << stack_size << ", %rsp" << endl;
+        cout << "ret" << endl;
     }
 }
 
@@ -268,7 +270,7 @@ void code_generator::evaluate_expression(parse_tree_node* p) {
         evaluate_pointer_expression(p);
     }
     else {
-        // TODO
+        // TODO floats
     }
 }
 
@@ -430,15 +432,7 @@ void code_generator::evaluate_val_F(parse_tree_node* p) {
             cout << "movq 0(%rax), %rax" << endl;
         }
         else if (operation == "&") {
-            parse_tree_node* lvalue = get_lvalue_id(child);
-            if (lvalue->get_declaration()->get_variable_depth() == 0) {
-                string id = ((id_node*)lvalue)->get_value();
-                cout << "movq $" << id << ", %rax" << endl;
-            }
-            else {
-                cout << "movq %rbx, %rax" << endl;
-                cout << "addq $" << get_variable_offset(lvalue) << ", %rax" << endl;
-            }
+            evaluate_pointer_factor(p->get_child_n(1));
         }
     }
 }
@@ -527,7 +521,7 @@ void code_generator::evaluate_array_expression(parse_tree_node* p) {
     parse_tree_node* child = p->get_child_n(0);
     string type = child->get_type();
     if (type == "assignment") {
-        // TODO
+        // Not allowed
     }
     else {
         evaluate_array_compexp(child);
@@ -604,13 +598,34 @@ void code_generator::evaluate_pointer_F(parse_tree_node* p) {
     }
     else {
         parse_tree_node* lvalue = get_lvalue_id(child);
-        if (lvalue->get_declaration()->get_variable_depth() == 0) {
-            string id = ((id_node*)lvalue)->get_value();
-            cout << "movq $" << id << ", %rax" << endl;
+        if (lvalue->get_type() == "id") {
+            parse_tree_node* dec = lvalue->get_declaration();
+            if (dec->get_variable_depth() == 0) {
+                string id = ((id_node*)lvalue)->get_value();
+                cout << "movq $" << id << ", %rax" << endl;
+            }
+            else {
+                cout << "movq %rbx, %rax" << endl;
+                cout << "addq $" << get_variable_offset(lvalue) 
+                    << ", %rax" << endl;
+            }
         }
-        else {
-            cout << "movq %rbx, %rax" << endl;
-            cout << "addq $" << get_variable_offset(lvalue) << ", %rax" << endl;
+        else { // array index
+            parse_tree_node* dec = lvalue->get_child_n(0)->get_declaration();
+            if (dec->get_variable_depth() == 0) {
+                string id = ((id_node*)lvalue)->get_value();
+                evaluate_val_expression(lvalue->get_child_n(1));
+                cout << "salq $3, %rax" << endl;
+                cout << "addq $" << id << ", %rax" << endl;
+            }
+            else {
+                evaluate_val_expression(lvalue->get_child_n(1));
+                cout << "salq $3, %rax" << endl;
+                cout << "addq %rbx, %rax" << endl;
+                parse_tree_node* id = lvalue->get_child_n(0);
+                cout << "addq $" << get_variable_offset(id) 
+                    << ", %rax" << endl;
+            }
         }
     }
 }

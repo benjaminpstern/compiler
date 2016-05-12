@@ -143,7 +143,7 @@ vector<string> register_names() {
 }
 
 parse_tree_node* get_lvalue_id(parse_tree_node* p) {
-    if (p->get_type() == "id") {
+    if (p->get_type() == "id" || p->get_type() == "array index") {
         return p;
     }
     for (int i = 0; i < p->get_num_children(); i++) {

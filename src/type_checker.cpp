@@ -566,6 +566,14 @@ string type_check_assignment(parse_tree_node* p) {
     id_node* id = (id_node*)left->get_child_n(1);
     parse_tree_node* right = p->get_child_n(1);
     string type = get_type_of_var(left);
+    if (type.back() == ']') {
+        std::stringstream s;
+        s << "Error: cannot assign object of type array";
+        s << " on line ";
+        s << p->get_line_num();
+        s << std::endl;
+        throw std::range_error(s.str());
+    }
     assert_type(type, type_check_expression(right), p->get_line_num());
     if (DEBUG) {
         std::cout << "Verified that assignment of variable "
