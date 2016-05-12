@@ -600,9 +600,6 @@ string type_check_expression(parse_tree_node* p) {
         type = "int";
     }
     p->set_evaluated_type(type);
-    if (type == "float" || type == "float*" || type == "float[]") {
-        throw std::range_error("Floats not implemented");
-    }
     return type;
 }
 

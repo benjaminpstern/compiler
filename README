@@ -1,8 +1,20 @@
 Benjamin Stern
 I have adhered to the honor code
-This is my type checker for BPL
+This is my compiler for BPL
 It's written in C++. Source files are in the src directory.
 
 To build the files, type "make"
-To run the type checker, type "./bpl filename"
+To run the compiler, type 
+
+./bpl program_name.bpl
+
+This will output assembly code to stdout. To redirect it to a file, type 
+./bpl program_name.bpl > compiled.s
+
+To assemble, use gcc on the .s file.
+
 I have provided some test programs to test with in test/testFiles
+In addition, the shell script ./assemble will compile all the programs in test/testFiles/code_generator_programs into the asm directory, and assemble them into bin.
+
+I have implemented a simple optimization for arithmetic expressions.
+If there is an unused register when evaluating an expression, instead of pushing onto the stack the compiler will use that register. This resulted in meager speedup of about 50ms from 4.06 seconds to 4.01 seconds in a loop with a billion iterations.

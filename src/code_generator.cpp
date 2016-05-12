@@ -9,7 +9,7 @@
 #endif
 
 void vecrm(vector<string>& vec, string s) {
-    for (int i = 0; i < vec.size(); i++) {
+    for (uint i = 0; i < vec.size(); i++) {
         if (vec[i] == s) {
             vec.erase(vec.begin() + i);
         }
@@ -45,7 +45,7 @@ void code_generator::deallocate_tmp_storage(string space) {
 }
 
 string code_generator::allocate_tmp_storage_32bit() {
-    for (int i = 0; i < available_tmp_regs_.size(); i++) {
+    for (uint i = 0; i < available_tmp_regs_.size(); i++) {
         if (!is_numeric(available_tmp_regs_[i].at(2))) {
             string reg = available_tmp_regs_[i];
             vecrm(available_tmp_regs_, reg);
@@ -270,7 +270,9 @@ void code_generator::evaluate_expression(parse_tree_node* p) {
         evaluate_pointer_expression(p);
     }
     else {
-        // TODO floats
+        if (type == "float" || type == "float*" || type == "float[]") {
+            throw std::range_error("Floats not implemented");
+        }
     }
 }
 
