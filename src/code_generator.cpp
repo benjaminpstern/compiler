@@ -350,7 +350,7 @@ void code_generator::evaluate_val_assignment(parse_tree_node* p) {
         else {
             cout << "salq $3, %rax" << endl;
             cout << "addq %rbx, %rax" << endl;
-            int offset = get_array_offset(dec);
+            int offset = get_local_offset(dec);
             cout << "addq $" << offset << ", %rax" << endl;
             cout << "movq " << space << ", %rdi" << endl;
             cout << "movq %rdi, 0(%rax)" << endl;
@@ -460,7 +460,7 @@ void code_generator::evaluate_val_factor(parse_tree_node* p) {
         else {
             cout << "salq $3, %rax" << endl;
             cout << "addq %rbx, %rax" << endl;
-            int offset = get_array_offset(dec);
+            int offset = get_local_offset(dec);
             cout << "addq $" << offset << ", %rax" << endl;
             cout << "movq 0(%rax), %rax" << endl;
         }
@@ -556,7 +556,7 @@ void code_generator::evaluate_array_factor(parse_tree_node* p) {
     }
     else {
         cout << "movq %rbx, %rax" << endl;
-        cout << "addq $" << get_array_offset(dec) << ", %rax" << endl;
+        cout << "addq $" << get_local_offset(dec) << ", %rax" << endl;
     }
 }
 

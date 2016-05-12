@@ -90,7 +90,7 @@ int find_strings(parse_tree_node* p, map<string, string>& m, int n) {
     return n;
 }
 
-int get_array_offset(parse_tree_node* p) {
+int get_local_offset(parse_tree_node* p) {
     return p->get_variable_pos() * -8 - 8;
 }
 
@@ -104,7 +104,7 @@ string var_placement(parse_tree_node* p) {
         int offset = 8 * declaration->get_variable_pos() + 16;
         return std::to_string(offset) + "(%rbx)";
     }
-    int offset = get_array_offset(declaration);
+    int offset = get_local_offset(declaration);
     return std::to_string(offset) + "(%rbx)";
 }
 
@@ -113,7 +113,7 @@ int get_variable_offset(parse_tree_node* p) {
     if (dec->get_variable_depth() == 1) {
         return 8 * dec->get_variable_pos() + 16;
     }
-    return get_array_offset(dec);
+    return get_local_offset(dec);
 }
 
 int max_pos(parse_tree_node* p) {
