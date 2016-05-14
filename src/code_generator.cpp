@@ -608,7 +608,7 @@ void code_generator::evaluate_pointer_F(parse_tree_node* p) {
             }
             else {
                 cout << "movq %rbx, %rax" << endl;
-                cout << "addq $" << get_variable_offset(lvalue) 
+                cout << "addq $" << get_variable_offset(lvalue)
                     << ", %rax" << endl;
             }
         }
@@ -625,7 +625,7 @@ void code_generator::evaluate_pointer_F(parse_tree_node* p) {
                 cout << "salq $3, %rax" << endl;
                 cout << "addq %rbx, %rax" << endl;
                 parse_tree_node* id = lvalue->get_child_n(0);
-                cout << "addq $" << get_variable_offset(id) 
+                cout << "addq $" << get_variable_offset(id)
                     << ", %rax" << endl;
             }
         }
